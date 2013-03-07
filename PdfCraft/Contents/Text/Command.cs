@@ -1,4 +1,4 @@
-namespace PdfCraft.Text
+namespace PdfCraft.Contents.Text
 {
     public enum Command
     {

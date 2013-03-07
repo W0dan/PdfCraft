@@ -45,11 +45,13 @@
     <Compile Include="Extensions\IntExtensions.cs" />
     <Compile Include="Fonts\FontDefinition.cs" />
     <Compile Include="Fonts\FontDescriptor.cs" />
+    <Compile Include="Fonts\FontObject.cs" />
     <Compile Include="Fonts\Fontwidths.cs" />
-    <Compile Include="Graphics\CircleDefinition.cs" />
-    <Compile Include="Graphics\ImageType.cs" />
+    <Compile Include="Contents\Graphics\CircleDefinition.cs" />
+    <Compile Include="Contents\Graphics\ImageType.cs" />
+    <Compile Include="Contents\Graphics\XObject.cs" />
     <Compile Include="PdfGenerator.cs" />
-    <Compile Include="PdfObjects\ContentsPart.cs" />
+    <Compile Include="Contents\ContentsPart.cs" />
     <Compile Include="API\GraphicsCanvas.cs" />
     <Compile Include="API\Document.cs" />
     <Compile Include="API\Page.cs" />
@@ -58,13 +60,12 @@
     <Compile Include="Extensions\PointExtensions.cs" />
     <Compile Include="Extensions\SizeExtensions.cs" />
     <Compile Include="Fonts\FontProperties.cs" />
-    <Compile Include="Fonts\FontObject.cs" />
     <Compile Include="Fonts\FontFactory.cs" />
     <Compile Include="Fonts\Fonts.cs" />
-    <Compile Include="Graphics\BoxDefinition.cs" />
-    <Compile Include="Graphics\Command.cs" />
-    <Compile Include="Graphics\GraphicsCommand.cs" />
-    <Compile Include="Graphics\LineDefinition.cs" />
+    <Compile Include="Contents\Graphics\BoxDefinition.cs" />
+    <Compile Include="Contents\Graphics\Command.cs" />
+    <Compile Include="Contents\Graphics\GraphicsCommand.cs" />
+    <Compile Include="Contents\Graphics\LineDefinition.cs" />
     <Compile Include="PdfObjects\BasePdfObject.cs" />
     <Compile Include="PdfObjects\CatalogObject.cs" />
     <Compile Include="Containers\ByteArrayByteContainer.cs" />
@@ -77,9 +78,9 @@
     <Compile Include="PdfObjects\PageObject.cs" />
     <Compile Include="PdfObjects\PagesObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Text\Command.cs" />
-    <Compile Include="Text\TextCommand.cs" />
-    <Compile Include="Text\WordWrapping.cs" />
+    <Compile Include="Contents\Text\Command.cs" />
+    <Compile Include="Contents\Text\TextCommand.cs" />
+    <Compile Include="Contents\Text\WordWrapping.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

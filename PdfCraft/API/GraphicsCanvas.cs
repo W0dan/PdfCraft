@@ -4,8 +4,9 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using PdfCraft.Constants;
+using PdfCraft.Contents;
+using PdfCraft.Contents.Graphics;
 using PdfCraft.Extensions;
-using PdfCraft.Graphics;
 
 namespace PdfCraft.API
 {

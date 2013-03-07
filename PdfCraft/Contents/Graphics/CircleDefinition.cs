@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace PdfCraft.Graphics
+namespace PdfCraft.Contents.Graphics
 {
     public class CircleDefinition
     {

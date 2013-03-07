@@ -4,9 +4,10 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using PdfCraft.Constants;
+using PdfCraft.Contents;
+using PdfCraft.Contents.Text;
 using PdfCraft.Extensions;
 using PdfCraft.Fonts;
-using PdfCraft.Text;
 
 namespace PdfCraft.API
 {

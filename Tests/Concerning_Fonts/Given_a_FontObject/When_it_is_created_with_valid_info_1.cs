@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using PdfCraft;
 using PdfCraft.Fonts;
 
 namespace Tests.Concerning_Fonts.Given_a_FontObject

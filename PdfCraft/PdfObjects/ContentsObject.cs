@@ -4,6 +4,7 @@ using System.Linq;
 using PdfCraft.API;
 using PdfCraft.Constants;
 using PdfCraft.Containers;
+using PdfCraft.Contents;
 
 namespace PdfCraft
 {

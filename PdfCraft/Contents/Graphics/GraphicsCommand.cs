@@ -1,4 +1,4 @@
-﻿namespace PdfCraft.Graphics
+﻿namespace PdfCraft.Contents.Graphics
 {
     internal class GraphicsCommand
     {

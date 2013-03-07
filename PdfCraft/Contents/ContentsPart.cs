@@ -1,4 +1,4 @@
-﻿namespace PdfCraft
+﻿namespace PdfCraft.Contents
 {
     public abstract class ContentsPart
     {
