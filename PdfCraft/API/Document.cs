@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using PdfCraft.Constants;
-using PdfCraft.Containers;
 using PdfCraft.Fonts;
 
 namespace PdfCraft.API
@@ -61,59 +59,25 @@ namespace PdfCraft.API
 
         public byte[] Generate()
         {
-            var xref = new List<string>();
+            var generator = new PdfGenerator();
 
-            xref.Add("0000000000 65535 f" + StringConstants.NewLine);
-            var content = ByteContainerFactory.CreateByteContainer("%PDF-1.7" + StringConstants.NewLine);
-            var offset = 9;
-
-            xref.Add(string.Format("{0:0000000000} 00000 n", offset) + StringConstants.NewLine);
-            content.Append(_catalog.Content);
-            offset += _catalog.Length;
-
-            xref.Add(string.Format("{0:0000000000} 00000 n", offset) + StringConstants.NewLine);
-            content.Append(_pages.Content);
-            offset += _pages.Length;
+            generator.AddCatalog(_catalog);
+            generator.AddObject(_pages);
 
             foreach (var fontObject in _fonts.ToDictionary())
             {
-                xref.Add(string.Format("{0:0000000000} 00000 n", offset) + StringConstants.NewLine);
-                content.Append(fontObject.Value.Content);
-                offset += fontObject.Value.Length;
-
-                xref.Add(string.Format("{0:0000000000} 00000 n", offset) + StringConstants.NewLine);
-                content.Append(fontObject.Value.FontWidths.Content);
-                offset += fontObject.Value.FontWidths.Length;
-
-                xref.Add(string.Format("{0:0000000000} 00000 n", offset) + StringConstants.NewLine);
-                content.Append(fontObject.Value.FontDescriptor.Content);
-                offset += fontObject.Value.FontDescriptor.Length;
+                generator.AddObject(fontObject.Value);
+                generator.AddObject(fontObject.Value.FontWidths);
+                generator.AddObject(fontObject.Value.FontDescriptor);
             }
+
             foreach (var pageObject in _pageObjects)
             {
-                xref.Add(string.Format("{0:0000000000} 00000 n", offset) + StringConstants.NewLine);
-                content.Append(pageObject.Contents.Content);
-                offset += pageObject.Contents.Length;
-
-                xref.Add(string.Format("{0:0000000000} 00000 n", offset) + StringConstants.NewLine);
-                content.Append(pageObject.Content);
-                offset += pageObject.Length;
+                generator.AddObject(pageObject.Contents);
+                generator.AddObject(pageObject);
             }
 
-            content.Append("xref" + StringConstants.NewLine);
-            content.Append(string.Format("0 {0}", xref.Count) + StringConstants.NewLine);
-            foreach (var xrefEntry in xref)
-                content.Append(xrefEntry);
-
-            content.Append("trailer" + StringConstants.NewLine);
-            content.Append(string.Format("<< /Size {0}", xref.Count) + StringConstants.NewLine);
-            content.Append(string.Format("/Root {0} 0 R", _catalog.Number) + StringConstants.NewLine);
-            content.Append(">>" + StringConstants.NewLine);
-            content.Append("startxref" + StringConstants.NewLine);
-            content.Append(string.Format("{0}", offset) + StringConstants.NewLine);
-            content.Append("%%EOF");
-
-            return content.GetBytes();
+            return generator.GetBytes();
         }
     }
 }

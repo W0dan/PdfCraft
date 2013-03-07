@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using PdfCraft.Constants;
 using PdfCraft.Extensions;
@@ -52,6 +53,16 @@ namespace PdfCraft.API
             _graphicsCommands.Add(new GraphicsCommand(Command.DrawCircle, circleDefinition));
         }
 
+        public void DrawImage(Point topLeft, Size size, ImageType imageType, string sourceFile)
+        {
+            
+        }
+
+        public void DrawImage(Point topLeft, Size size, ImageType imageType, Stream sourceStream)
+        {
+            
+        }
+
         internal override string Content
         {
             get
@@ -90,7 +101,11 @@ namespace PdfCraft.API
                             var R = circle.Radius;
                             var l = (int)Math.Round(kappa * R, 3);
 
-                            //Xc Yc+R m Xc+l Yc+R Xc+R Yc+l Xc+R Yc c Xc+R Yc-l Xc+l Yc-R Xc Yc-R c Xc-l Yc-R Xc-R Yc-l Xc-R Yc c Xc-R Yc+l Xc-l Yc+R Xc Yc+R c B
+                        //Xc Yc+R m 
+                        //Xc+l Yc+R Xc+R Yc+l Xc+R Yc c 
+                        //Xc+R Yc-l Xc+l Yc-R Xc Yc-R c 
+                        //Xc-l Yc-R Xc-R Yc-l Xc-R Yc c 
+                        //Xc-R Yc+l Xc-l Yc+R Xc Yc+R c B
                             const string circleFormat = "{0} {1} m {2} {1} {3} {4} {3} {5} c {3} {6} {2} {7} {0} {7} c {8} {7} {9} {6} {9} {5} c {9} {4} {8} {1} {0} {1} c B ";
                             sb.Append(string.Format(circleFormat, Xc, Yc + R, Xc + l, Xc + R, Yc + l, Yc, Yc - l, Yc - R, Xc - l, Xc - R));
 
@@ -100,28 +115,6 @@ namespace PdfCraft.API
 
                 return sb.ToString();
             }
-        }
-    }
-
-    public class CircleDefinition
-    {
-        private readonly Point _center;
-        private readonly double _radius;
-
-        public CircleDefinition(Point center, double radius)
-        {
-            _center = center;
-            _radius = radius;
-        }
-
-        public Point Center
-        {
-            get { return _center; }
-        }
-
-        public double Radius
-        {
-            get { return _radius; }
         }
     }
 }

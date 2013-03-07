@@ -6,6 +6,7 @@
         SetStrokeColor,
         DrawLine,
         DrawBox,
-        DrawCircle
+        DrawCircle,
+        DrawImage
     }
 }

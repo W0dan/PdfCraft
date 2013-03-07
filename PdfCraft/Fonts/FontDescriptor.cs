@@ -13,13 +13,9 @@ namespace PdfCraft.Fonts
             _font = font;
 
             if (font.Name == "Helvetica")
-            {
                 _flags = 32;
-            }
             else if (font.Name == "Courier")
-            {
                 _flags = 35;
-            }
         }
 
         public override IByteContainer Content

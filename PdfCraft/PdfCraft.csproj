@@ -46,6 +46,9 @@
     <Compile Include="Fonts\FontDefinition.cs" />
     <Compile Include="Fonts\FontDescriptor.cs" />
     <Compile Include="Fonts\Fontwidths.cs" />
+    <Compile Include="Graphics\CircleDefinition.cs" />
+    <Compile Include="Graphics\ImageType.cs" />
+    <Compile Include="PdfGenerator.cs" />
     <Compile Include="PdfObjects\ContentsPart.cs" />
     <Compile Include="API\GraphicsCanvas.cs" />
     <Compile Include="API\Document.cs" />
