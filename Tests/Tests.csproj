@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DDC28424-F6D8-47D5-8255-24AE43B444AF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Tests</RootNamespace>
+    <AssemblyName>Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseTest.cs" />
+    <Compile Include="Concerning_Fonts\Given_a_FontObject\When_it_is_created_with_valid_info_1.cs" />
+    <Compile Include="Concerning_Fonts\Given_a_FontObject\When_it_is_created_with_valid_info.cs" />
+    <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_a_realistic_amount_of_text_is_added_in_font_Helvetica.cs" />
+    <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_a_realistic_amount_of_text_is_added.cs" />
+    <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_colored_text_wrapped_is_added2.cs" />
+    <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_text_and_graphics_is_added.cs" />
+    <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_colored_text_is_added.cs" />
+    <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_colored_text_wrapped_is_added.cs" />
+    <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_text_is_added.cs" />
+    <Compile Include="Concerning_the_API\Given_a_document\When_CreateTextBox_is_called.cs" />
+    <Compile Include="Concerning_the_API\Given_a_GraphicsCanvas\When_DrawCircle_is_called.cs" />
+    <Compile Include="Concerning_the_API\Given_a_TextBox\When_the_color_is_set_to_gray.cs" />
+    <Compile Include="Concerning_the_API\Given_a_TextBox\When_text_is_added.cs" />
+    <Compile Include="Concerning_the_API\Given_a_TextBox\When_the_color_is_set_to_black.cs" />
+    <Compile Include="Concerning_the_API\Given_a_TextBox\When_the_font_is_set.cs" />
+    <Compile Include="Concerning_the_ByteArrayByteContainer\Given_a_non_empty_ByteArrayByteContainer\When_Append_is_called_with_a_large_valid_string.cs" />
+    <Compile Include="Concerning_the_ByteArrayByteContainer\Given_a_non_empty_ByteArrayByteContainer\When_Append_is_called_with_a_byte_array.cs" />
+    <Compile Include="Concerning_the_ByteArrayByteContainer\Given_a_non_empty_ByteArrayByteContainer\Non_empty_ByteArrayByteContainer.cs" />
+    <Compile Include="Concerning_the_ByteArrayByteContainer\Given_a_non_empty_ByteArrayByteContainer\When_Append_is_called_with_a_valid_string.cs" />
+    <Compile Include="Concerning_the_ByteArrayByteContainer\Given_the_ByteArrayByteContainer_that_is_constructed_with_a_byte_array\ByteArrayContainer_that_is_constructed_with_a_byte_array.cs" />
+    <Compile Include="Concerning_the_ByteArrayByteContainer\Given_the_ByteArrayByteContainer_that_is_constructed_with_a_byte_array\When_GetBytes_is_called.cs" />
+    <Compile Include="Concerning_the_ByteArrayByteContainer\Given_the_ByteArrayByteContainer_that_is_constructed_with_a_byte_array\When_ToString_is_called.cs" />
+    <Compile Include="Concerning_the_ByteArrayByteContainer\Given_the_ByteArrayByteContainer\When_it_is_constructed_with_an_invalid_string.cs" />
+    <Compile Include="Concerning_the_ByteArrayByteContainer\Given_the_ByteArrayByteContainer_that_is_constructed_with_a_valid_string\ByteArrayContainer_that_is_constructed_with_a_valid_string.cs" />
+    <Compile Include="Concerning_the_ByteArrayByteContainer\Given_the_ByteArrayByteContainer_that_is_constructed_with_a_valid_string\When_GetBytes_is_called.cs" />
+    <Compile Include="Concerning_the_ByteArrayByteContainer\Given_the_ByteArrayByteContainer_that_is_constructed_with_a_valid_string\When_ToString_is_called.cs" />
+    <Compile Include="Concerning_the_StringExtensions\Given_the_ToBytes_method_in_StringExtensions\When_it_is_called_with_an_invalid_string.cs" />
+    <Compile Include="Concerning_the_StringExtensions\Given_the_ToBytes_method_in_StringExtensions\When_it_is_called_with_a_valid_string.cs" />
+    <Compile Include="Concerning_the_CatalogObject\Given_a_CatalogObject\When_a_PagesObject_is_added.cs" />
+    <Compile Include="Concerning_the_CatalogObject\Given_a_CatalogObject\When_it_is_created.cs" />
+    <Compile Include="Concerning_the_PageObject\Given_a_ContentsObject\When_a_TextBox_is_added.cs" />
+    <Compile Include="Concerning_the_PageObject\Given_a_PageObject\When_a_ContentsObject_is_added.cs" />
+    <Compile Include="Concerning_the_PageObject\Given_a_PageObject\When_it_is_created.cs" />
+    <Compile Include="Concerning_the_PageObject\Given_a_ContentsObject\When_it_is_created.cs" />
+    <Compile Include="Concerning_the_PagesObject\Given_a_PagesObject\When_3_PageObjects_are_added.cs" />
+    <Compile Include="Concerning_the_PagesObject\Given_a_PagesObject\When_2_PageObjects_are_added.cs" />
+    <Compile Include="Concerning_the_PagesObject\Given_a_PagesObject\When_a_PageObject_is_added.cs" />
+    <Compile Include="Concerning_the_PagesObject\Given_a_PagesObject\When_it_is_created.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestExecutor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PdfCraft\PdfCraft.csproj">
+      <Project>{EB7C7A8B-6476-47B7-BD3C-4A8B4367997D}</Project>
+      <Name>PdfCraft</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
