@@ -6,7 +6,7 @@ using PdfCraft.Fonts;
 
 namespace Tests.Concerning_the_API.Given_a_document
 {
-    public class When_a_Page_with_a_realistic_amount_of_text_is_added_in_font_Courier : BaseTest
+    public class When_a_Page_with_a_realistic_amount_of_text_is_added_in_font_Courier_left_aligned : BaseTest
     {
         private Document _sut;
         private TextBox _title;

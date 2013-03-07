@@ -48,13 +48,12 @@
     <Compile Include="Concerning_Fonts\Given_a_FontObject\When_it_is_created_with_valid_info_1.cs" />
     <Compile Include="Concerning_Fonts\Given_a_FontObject\When_it_is_created_with_valid_info.cs" />
     <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_a_realistic_amount_of_text_is_added_in_font_Helvetica_center_aligned.cs" />
-    <Compile Include="Concerning_the_API\Given_a_document\Testpage_Helvetica_Fontwidths.cs" />
     <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_a_realistic_amount_of_text_is_added_in_font_Courier_justified.cs" />
     <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_a_realistic_amount_of_text_is_added_in_font_Helvetica_justified.cs" />
     <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_a_realistic_amount_of_text_is_added_in_font_courier_right_aligned.cs" />
     <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_a_realistic_amount_of_text_is_added_in_font_Helvetica_right_aligned.cs" />
-    <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_a_realistic_amount_of_text_is_added_in_font_Helvetica.cs" />
-    <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_a_realistic_amount_of_text_is_added_in_font_Courier.cs" />
+    <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_a_realistic_amount_of_text_is_added_in_font_Helvetica_left_aligned.cs" />
+    <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_a_realistic_amount_of_text_is_added_in_font_Courier_left_aligned.cs" />
     <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_colored_text_wrapped_is_added2.cs" />
     <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_text_and_graphics_is_added.cs" />
     <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_colored_text_is_added.cs" />
