@@ -24,6 +24,7 @@ namespace Tests.Concerning_the_API.Given_a_TextBox
         public override void Act()
         {
             _sut.SetFont(_properties);
+            _sut.AddText("test");
         }
 
         [Test]

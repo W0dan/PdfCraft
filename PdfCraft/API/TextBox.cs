@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Resources;
+using System.Linq;
 using System.Text;
 using PdfCraft.Constants;
 using PdfCraft.Extensions;
@@ -15,8 +15,7 @@ namespace PdfCraft.API
         private readonly Document _owner;
         private readonly List<TextCommand> _textCommands = new List<TextCommand>();
         private readonly HashSet<string> _fontNames = new HashSet<string>();
-        private Size _size;
-        private ResourceManager _fontWidths;
+        private readonly Size _size;
 
         internal TextBox(Rectangle sizeAndPosition, Document owner)
         {
@@ -69,14 +68,15 @@ namespace PdfCraft.API
         {
             get
             {
-                var sb = new StringBuilder();
                 FontDefinition currentFont = null;
                 var currentAlignment = TextAlignment.Left;
                 var currentColor = Color.Black;
 
-                sb.Append(string.Format("1 0 0 1 {0} {1} Tm ", Position.X, Position.Y));
+                var buffer = new List<TextboxLineBuffer>();
 
-                WordWrapping wordWrapper = null;
+                TextboxLineBuffer lineBuffer = null;
+
+                var wordWrapper = new WordWrapping(_size.Width);
 
                 foreach (var textCommand in _textCommands)
                 {
@@ -84,22 +84,9 @@ namespace PdfCraft.API
                     {
                         case Command.SetFont:
                             currentFont = (FontDefinition)textCommand.Data;
-
-                            sb.Append(string.Format("{0} {1} Tf ", currentFont.Font.FontName, currentFont.Size));
-
-                            if (wordWrapper == null)
-                            {
-                                wordWrapper = CreateWordWrapper();
-
-                                var textLeading = (int)(currentFont.Size * 1.21);
-                                sb.Append(string.Format("0 -{0} TD ", textLeading));
-                            }
-
                             break;
                         case Command.SetColor:
                             currentColor = (Color)textCommand.Data;
-
-                            sb.Append(currentColor.ToPdfColor() + " rg ");
                             break;
                         case Command.SetAlignment:
                             currentAlignment = (TextAlignment)textCommand.Data;
@@ -108,81 +95,216 @@ namespace PdfCraft.API
                             if (currentFont == null)
                                 throw new ApplicationException("before adding text to a textbox, a font must be set");
 
-                            var addedText = (string)textCommand.Data;
+                            if (lineBuffer == null)
+                            {
+                                lineBuffer = new TextboxLineBuffer(currentAlignment);
+                                buffer.Add(lineBuffer);
+                            }
+
+                            var addedText = textCommand.Data.ToString();
                             var texts = addedText.Split('\n');
 
                             for (var i = 0; i < texts.Length; i++)
                             {
                                 if (i > 0) //newline encountered
                                 {
-                                    sb.Append(" T*");
-                                    wordWrapper = CreateWordWrapper();
+                                    lineBuffer.Parts.Last().EndOfLine = true;
+                                    lineBuffer.Linefeed = true;
+                                    wordWrapper = new WordWrapping(_size.Width);
                                 }
-                                sb = AddText(wordWrapper, currentFont, texts[i], sb, currentAlignment);
-                            }
 
+                                var breaks = wordWrapper.WrapIt(texts[i], currentFont);
+
+                                foreach (var textItem in breaks)
+                                {
+                                    if (lineBuffer.Parts.Any() && lineBuffer.Parts.Last().EndOfLine)
+                                    {
+                                        lineBuffer = new TextboxLineBuffer(currentAlignment);
+                                        buffer.Add(lineBuffer);
+                                    }
+
+                                    if (!textItem.HasToBreak)
+                                    {
+                                        var bufferItemPart = new TextboxLinePart(textItem, currentFont, currentColor, false);
+                                        lineBuffer.AddPart(bufferItemPart);
+                                    }
+                                    else
+                                    {
+                                        var bufferItemPart = new TextboxLinePart(textItem, currentFont, currentColor, true);
+                                        lineBuffer.AddPart(bufferItemPart);
+                                    }
+                                }
+                            }
                             break;
                     }
                 }
 
-                return sb.ToString();
+                return WriteBufferToPdf(buffer);
             }
         }
 
-        private WordWrapping CreateWordWrapper()
+        private string WriteBufferToPdf(IEnumerable<TextboxLineBuffer> buffer)
         {
-            _fontWidths = new ResourceManager("PdfCraft.Fonts.fontwidths", typeof(Document).Assembly);
+            var sbBuffered = new StringBuilder();
+            sbBuffered.Append(string.Format("1 0 0 1 {0} {1} Tm ", Position.X, Position.Y));
 
-            var wordWrapper = new WordWrapping
+            var textLeadingIsSet = false;
+            var colorIsSet = false;
+            FontDefinition previousFont = null;
+            var previousColor = Color.Black;
+
+            double previousLineLength = -1;
+
+            foreach (var line in buffer)
             {
-                LineLength = _size.Width * 1000,
-                GetGlyphWidth = (c, f) =>
+                var sbBufferedLine = new StringBuilder();
+                foreach (var part in line.Parts)
                 {
-                    var name = f.Font.Name + "-" + ((byte)c).ToString("000");
-                    var dictWidth = _fontWidths.GetString(name);
-                    var width = string.IsNullOrEmpty(dictWidth) ? 610 : int.Parse(dictWidth);
-                    return width * f.Size;
+                    if (!textLeadingIsSet)
+                    {
+                        textLeadingIsSet = true;
+
+                        var textLeading = (int)(part.Font.Size * 1.21);
+                        sbBuffered.Append(string.Format("0 -{0} TD ", textLeading));
+                    }
+
+                    if (!colorIsSet || part.Color != previousColor)
+                    {
+                        colorIsSet = true;
+                        previousColor = part.Color;
+
+                        sbBufferedLine.Append(string.Format(part.Color.ToPdfColor() + " rg "));
+                    }
+
+                    if (part.Font != previousFont)
+                    {
+                        previousFont = part.Font;
+
+                        sbBufferedLine.Append(string.Format("{0} {1} Tf ", part.Font.Font.FontName, part.Font.Size));
+                    }
+
+                    if (part.TextItem.Text.Length > 0)
+                        sbBufferedLine.Append(string.Format("({0}) Tj", part.TextItem.Text));
+
+                    if (part.EndOfLine)
+                        sbBufferedLine.Append(" T*" + StringConstants.NewLine);
+                    else
+                        sbBufferedLine.Append(StringConstants.NewLine);
                 }
-            };
-            return wordWrapper;
-        }
 
-        private static StringBuilder AddText(WordWrapping wordWrapper, FontDefinition currentFont, string text, StringBuilder sb, TextAlignment currentAlignment)
-        {
-            if (wordWrapper == null)
-                throw new ArgumentNullException("wordWrapper", "please set a font for the textbox before adding text");
+                var currentLineLength = (double)line.Parts.Sum(x => x.TextItem.LengthInPoints) / 1000;
+                switch (line.CurrentAlignment)
+                {
+                    case TextAlignment.Left:
+                        sbBuffered.Append("100 Tz ");
+                        break;
+                    case TextAlignment.Right:
+                        {
+                            double xOffset;
+                            if (previousLineLength < 0)
+                                xOffset = _size.Width - (currentLineLength);
+                            else
+                                xOffset = (previousLineLength - currentLineLength);
 
-            var breaks = wordWrapper.WrapIt(text, currentFont);
+                            sbBuffered.Append(string.Format("{0:0.###} 0 Td ", xOffset).Replace(',', '.'));
 
-            switch (currentAlignment)
-            {
-                case TextAlignment.Left:
-                    sb.Append(GetTextLeftAligned(breaks));
-                    break;
-                case TextAlignment.Right:
-                    break;
-                case TextAlignment.Center:
-                    break;
-                case TextAlignment.Justify:
-                    break;
+                            previousLineLength = currentLineLength;
+                        }
+                        break;
+                    case TextAlignment.Center:
+                        {
+                            double xOffset;
+                            if (previousLineLength < 0)
+                                xOffset = _size.Width - (currentLineLength);
+                            else
+                                xOffset = (previousLineLength - currentLineLength);
+
+                            sbBuffered.Append(string.Format("{0:0.###} 0 Td ", xOffset / 2).Replace(',', '.'));
+
+                            previousLineLength = currentLineLength;
+                        }
+                        break;
+                    case TextAlignment.Justify:
+                        if (currentLineLength > 0)
+                        {
+                            double scaleFactor;
+                            if (line.Linefeed)
+                                scaleFactor = 100;
+                            else
+                                scaleFactor = _size.Width / currentLineLength * 100;
+
+                            sbBuffered.Append(string.Format("{0:0.###} Tz ", scaleFactor).Replace(',', '.'));
+                        }
+                        break;
+                }
+                sbBuffered.Append(sbBufferedLine);
+
             }
 
-            return sb;
+            return sbBuffered.ToString();
+        }
+    }
+
+    /// <summary>
+    /// defines a line of text
+    /// </summary>
+    internal class TextboxLineBuffer
+    {
+        private readonly TextAlignment _currentAlignment;
+        private readonly List<TextboxLinePart> _parts = new List<TextboxLinePart>();
+
+        public TextboxLineBuffer(TextAlignment currentAlignment)
+        {
+            _currentAlignment = currentAlignment;
         }
 
-        private static StringBuilder GetTextLeftAligned(IEnumerable<BreakPoint> breaks)
+        public void AddPart(TextboxLinePart part)
         {
-            var sb = new StringBuilder();
+            _parts.Add(part);
+        }
 
-            foreach (var breakPoint in breaks)
-            {
-                if (breakPoint.PositionToBreak < 0)
-                    sb.Append(string.Format("({0}) Tj", breakPoint.Text) + StringConstants.NewLine);
-                else
-                    sb.Append(string.Format("({0}) Tj T*", breakPoint.Text) + StringConstants.NewLine);
-            }
+        public List<TextboxLinePart> Parts { get { return _parts; } }
 
-            return sb;
+        public TextAlignment CurrentAlignment
+        {
+            get { return _currentAlignment; }
+        }
+
+        public bool Linefeed { get; set; }
+    }
+
+    /// <summary>
+    /// defines a part of a line of text, with layout
+    /// </summary>
+    internal class TextboxLinePart
+    {
+        private readonly BreakPoint _textItem;
+        private readonly FontDefinition _font;
+        private readonly Color _color;
+
+        public TextboxLinePart(BreakPoint textItem, FontDefinition font, Color color, bool endOfLine)
+        {
+            _textItem = textItem;
+            _font = font;
+            _color = color;
+            EndOfLine = endOfLine;
+        }
+
+        public bool EndOfLine { get; set; }
+
+        public BreakPoint TextItem
+        {
+            get { return _textItem; }
+        }
+
+        public FontDefinition Font
+        {
+            get { return _font; }
+        }
+
+        public Color Color
+        {
+            get { return _color; }
         }
     }
 }

@@ -44,6 +44,8 @@
     <Compile Include="API\TextAlignment.cs" />
     <Compile Include="Extensions\IntExtensions.cs" />
     <Compile Include="Fonts\FontDefinition.cs" />
+    <Compile Include="Fonts\FontDescriptor.cs" />
+    <Compile Include="Fonts\Fontwidths.cs" />
     <Compile Include="PdfObjects\ContentsPart.cs" />
     <Compile Include="API\GraphicsCanvas.cs" />
     <Compile Include="API\Document.cs" />
@@ -64,7 +66,6 @@
     <Compile Include="PdfObjects\CatalogObject.cs" />
     <Compile Include="Containers\ByteArrayByteContainer.cs" />
     <Compile Include="Containers\ByteContainerFactory.cs" />
-    <Compile Include="Containers\StringBuilderByteContainer.cs" />
     <Compile Include="Constants\StringConstants.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
@@ -79,7 +80,9 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <EmbeddedResource Include="Fonts\fontwidths.resx" />
+    <EmbeddedResource Include="Fonts\fontwidths.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

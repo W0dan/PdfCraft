@@ -27,7 +27,7 @@ namespace Tests.Concerning_the_StringExtensions.Given_the_ToBytes_method_in_Stri
                 {
                     for (var i = 0; i < _result.Length; i++)
                     {
-                        Assert.AreEqual(_text[i], (char) _result[i]);
+                        Assert.AreEqual(_text[i], (char)_result[i]);
                     }
                 });
         }

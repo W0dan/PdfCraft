@@ -6,7 +6,7 @@ using PdfCraft.Fonts;
 
 namespace Tests.Concerning_the_API.Given_a_document
 {
-    public class When_a_Page_with_a_realistic_amount_of_text_is_added_in_font_Helvetica : BaseTest
+    public class When_a_Page_with_a_realistic_amount_of_text_is_added_in_font_Helvetica_right_aligned : BaseTest
     {
         private Document _sut;
         private TextBox _title;
@@ -43,6 +43,7 @@ namespace Tests.Concerning_the_API.Given_a_document
         private TextBox CreateTextbox(Point location, Size size, int fontSize)
         {
             var textbox = _sut.CreateTextBox(new Rectangle(location, size));
+            textbox.SetAlignment(TextAlignment.Right);
             textbox.SetFont(new FontProperties { Name = "Helvetica", Size = fontSize });
             var realisticText_pt1 = "The select Model is the most widely available I/O model in Winsock. " +
                                     "We call it the select model because it centers on using the select function to " +

@@ -14,22 +14,6 @@ namespace PdfCraft
             _objectContent = null;
         }
 
-        protected BasePdfObject(int objectNumber, IByteContainer objectContent)
-        {
-            _objectNumber = objectNumber;
-            _objectContent = objectContent;
-        }
-
-        protected void SetContent(string newContent)
-        {
-            _objectContent = ByteContainerFactory.CreateByteContainer(newContent);
-        }
-
-        protected void SetContent(byte[] newContent)
-        {
-            _objectContent = ByteContainerFactory.CreateByteContainer(newContent);
-        }
-
         protected void SetContent(IByteContainer newContent)
         {
             _objectContent = newContent;

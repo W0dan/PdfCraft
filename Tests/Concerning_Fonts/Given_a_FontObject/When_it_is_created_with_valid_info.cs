@@ -10,6 +10,8 @@ namespace Tests.Concerning_Fonts.Given_a_FontObject
         private string _fontName;
         private string _baseFontname;
         private FontProperties _fontProperties;
+        private Fontwidths _fontWidths;
+        private FontDescriptor _fontDescriptor;
 
         public override void Arrange()
         {
@@ -22,6 +24,10 @@ namespace Tests.Concerning_Fonts.Given_a_FontObject
         public override void Act()
         {
             _sut = new FontObject(_objectNumber, _fontName, _fontProperties.Name);
+            _fontWidths = new Fontwidths(521, _sut);
+            _sut.FontWidths = _fontWidths;
+            _fontDescriptor = new FontDescriptor(621, _sut);
+            _sut.FontDescriptor = _fontDescriptor;
         }
 
         [Test]
@@ -31,8 +37,8 @@ namespace Tests.Concerning_Fonts.Given_a_FontObject
 
             test.Assert(() =>
                 {
-                    const string format = "{4} 0 obj\r\n<< /Type /Font /Subtype /{0} /Name {1} /BaseFont /{2} /Encoding /{3} >>\r\nendobj\r\n";
-                    var expectedValue = string.Format(format, "Type1", _fontName, _fontProperties.Name, "WinAnsiEncoding", _objectNumber);
+                    const string format = "{4} 0 obj\r\n<< /Type /Font /Subtype /{0} /Name {1} /BaseFont /{2} /Encoding /{3} /Widths {5} 0 R /FirstChar 0 /LastChar 255 /FontDescriptor {6} 0 R >>\r\nendobj\r\n";
+                    var expectedValue = string.Format(format, "Type1", _fontName, _fontProperties.Name, "WinAnsiEncoding", _objectNumber, _fontWidths.Number, _fontDescriptor.Number);
                     Assert.AreEqual(expectedValue, _sut.Content.ToString());
                 });
         }

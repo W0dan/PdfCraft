@@ -20,5 +20,10 @@
         {
             get { return _size; }
         }
+
+        public int GetWidth(char c)
+        {
+            return _font.FontWidths.Widths[(byte)c] * _size;
+        }
     }
 }

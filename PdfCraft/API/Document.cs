@@ -80,6 +80,14 @@ namespace PdfCraft.API
                 xref.Add(string.Format("{0:0000000000} 00000 n", offset) + StringConstants.NewLine);
                 content.Append(fontObject.Value.Content);
                 offset += fontObject.Value.Length;
+
+                xref.Add(string.Format("{0:0000000000} 00000 n", offset) + StringConstants.NewLine);
+                content.Append(fontObject.Value.FontWidths.Content);
+                offset += fontObject.Value.FontWidths.Length;
+
+                xref.Add(string.Format("{0:0000000000} 00000 n", offset) + StringConstants.NewLine);
+                content.Append(fontObject.Value.FontDescriptor.Content);
+                offset += fontObject.Value.FontDescriptor.Length;
             }
             foreach (var pageObject in _pageObjects)
             {

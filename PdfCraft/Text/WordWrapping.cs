@@ -1,13 +1,18 @@
 using System;
 using System.Collections.Generic;
-using PdfCraft.API;
+using System.Linq;
 using PdfCraft.Fonts;
 
 namespace PdfCraft.Text
 {
     internal class WordWrapping
     {
-        private int _runningLengthFromLastBreak;
+        private int _runningLineLength;
+
+        public WordWrapping(int width)
+        {
+            LineLength = width * 1000;
+        }
 
         /// <summary>
         /// 
@@ -20,67 +25,75 @@ namespace PdfCraft.Text
             var breakPositions = new List<BreakPoint>();
 
             var lastBreakPosition = -1;
-            var currentPosition = 0;
-            var runningLengthFromLastBreakPosition = 0;
             var previousBreakPoint = 0;
-            foreach (var c in text)
+
+            var lengthSinceLastBreak = 0;
+            var runningPartLength = 0;
+
+            for (var i = 0; i < text.Length; i++)
             {
+                var c = text[i];
                 if (c == ' ')
                 {
-                    runningLengthFromLastBreakPosition = 0;
-                    lastBreakPosition = currentPosition;
+                    lengthSinceLastBreak = 0;
+                    lastBreakPosition = i;
                 }
 
-                var cWidth = GetGlyphWidth(c, currentFont);
+                var glyphWidth = currentFont.GetWidth(c);
 
-                _runningLengthFromLastBreak += cWidth;
-                runningLengthFromLastBreakPosition += cWidth;
+                _runningLineLength += glyphWidth;
+                runningPartLength += glyphWidth;
+                lengthSinceLastBreak += glyphWidth;
 
-                if (_runningLengthFromLastBreak > LineLength)
+                if (_runningLineLength > LineLength)
                 {
+                    var textPart = text.Substring(previousBreakPoint, lastBreakPosition + 1 - previousBreakPoint);
+
                     breakPositions.Add(new BreakPoint(
-                        lastBreakPosition + 1, 
-                        _runningLengthFromLastBreak - runningLengthFromLastBreakPosition, 
-                        text.Substring(previousBreakPoint, lastBreakPosition + 1 - previousBreakPoint)));
+                        true,
+                        runningPartLength - lengthSinceLastBreak,
+                        textPart));
+
+                    runningPartLength = lengthSinceLastBreak;
+
+                    if (textPart.Any() && textPart.Last() == ' ')
+                    {
+                        lengthSinceLastBreak -= glyphWidth;
+                        runningPartLength -= currentFont.GetWidth(' ');
+                    }
 
                     previousBreakPoint = lastBreakPosition + 1;
-                    if (c == ' ')
-                        runningLengthFromLastBreakPosition -= GetGlyphWidth(c, currentFont);
-                    _runningLengthFromLastBreak = runningLengthFromLastBreakPosition;
+                    _runningLineLength = lengthSinceLastBreak;
                 }
-
-                currentPosition++;
             }
 
             breakPositions.Add(new BreakPoint(
-                -1, 
-                _runningLengthFromLastBreak - runningLengthFromLastBreakPosition, 
+                false,
+                runningPartLength,
                 text.Substring(previousBreakPoint)));
 
             return breakPositions;
         }
 
         public int LineLength { get; set; }
-
-        public Func<char, FontDefinition, int> GetGlyphWidth { get; set; }
     }
 
     internal class BreakPoint
     {
-        private readonly int _positionToBreak;
+        private readonly bool _hasToBreak;
         private readonly int _lengthInPoints;
         private readonly string _text;
 
-        public BreakPoint(int positionToBreak, int lengthInPoints, string text)
+        public BreakPoint(bool hasToBreak, int lengthInPoints, string text)
         {
-            _positionToBreak = positionToBreak;
+            _hasToBreak = hasToBreak;
             _lengthInPoints = lengthInPoints;
             _text = text;
         }
 
-        public int PositionToBreak
+        public bool HasToBreak
         {
-            get { return _positionToBreak; }
+            get { return _hasToBreak; }
         }
 
         public string Text

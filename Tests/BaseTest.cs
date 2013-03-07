@@ -19,8 +19,7 @@ namespace Tests
 
         protected void DumpToRandomFile(byte[] buffer, string extension)
         {
-            var tempFolder = System.Configuration.ConfigurationManager.AppSettings["tempfolder"];
-            var filename = string.Format(@"{2}\{0}.{1}", Guid.NewGuid(), extension, tempFolder);
+            var filename = string.Format(@"C:\temp\{0}.{1}", Guid.NewGuid(), extension);
 
             DumpToFile(buffer, filename);
         }
