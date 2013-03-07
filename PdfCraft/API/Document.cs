@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using PdfCraft.Contents.Graphics;
 using PdfCraft.Fonts;
 
 namespace PdfCraft.API
@@ -11,6 +13,7 @@ namespace PdfCraft.API
         private readonly CatalogObject _catalog;
         private readonly PagesObject _pages;
         private readonly List<PageObject> _pageObjects = new List<PageObject>();
+        private readonly XObjects _xObjects;
 
         public Document()
         {
@@ -18,6 +21,7 @@ namespace PdfCraft.API
             _pages = new PagesObject(GetNextObjectNumber());
             _catalog.AddPages(_pages);
             _fonts = new Fonts.Fonts();
+            _xObjects = new XObjects();
         }
 
         public TextBox CreateTextBox(Rectangle sizeAndPosition)
@@ -35,14 +39,24 @@ namespace PdfCraft.API
             return _nextObjectNumber++;
         }
 
-        internal FontObject AddFont(string properties)
+        internal FontObject AddFont(string name)
         {
-            return _fonts.AddFont(properties, GetNextObjectNumber);
+            return _fonts.AddFont(name, GetNextObjectNumber);
         }
 
         internal Fonts.Fonts Fonts
         {
             get { return _fonts; }
+        }
+
+        internal XObject AddXObject(ImageType imageType, string sourceFile)
+        {
+            return _xObjects.AddXObject(imageType, sourceFile, GetNextObjectNumber);
+        }
+
+        internal XObject AddXObject(ImageType imageType, Stream sourceStream)
+        {
+            return _xObjects.AddXObject(imageType, sourceStream, GetNextObjectNumber);
         }
 
         public Page AddPage()

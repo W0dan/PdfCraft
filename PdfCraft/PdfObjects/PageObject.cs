@@ -2,6 +2,7 @@ using System.Drawing;
 using PdfCraft.API;
 using PdfCraft.Constants;
 using PdfCraft.Containers;
+using PdfCraft.Extensions;
 
 namespace PdfCraft
 {
@@ -14,7 +15,7 @@ namespace PdfCraft
         public PageObject(int objectNumber, Size size)
             : base(objectNumber)
         {
-            _size = new Size((int)(size.Width * 2.54), (int)(size.Height * 2.54));
+            _size = size.GetSizeInMillimeters();
         }
 
         public void AddContents(ContentsObject contents)
@@ -57,12 +58,22 @@ namespace PdfCraft
                 content.Append(string.Format("/MediaBox [0 0 {0} {1}]", _size.Width, _size.Height) + StringConstants.NewLine);
                 content.Append(string.Format("/Contents {0} 0 R", _contents.Number) + StringConstants.NewLine);
 
-                content.Append("/Resources << /ProcSet [/PDF /Text /ImageC] /Font << ");
+                content.Append("/Resources <<" + StringConstants.NewLine);
+                content.Append("/ProcSet [/PDF /Text /ImageC]" + StringConstants.NewLine);
 
+                //fonts
+                content.Append("/Font << ");
                 foreach (var fontname in _contents.GetFontnames())
                     content.Append(fontname);
+                content.Append(">>" + StringConstants.NewLine);
 
-                content.Append(">> >> >>");
+                //xobjects
+                content.Append("/XObject << ");
+                foreach (var xObjectname in _contents.GetXObjectnames())
+                    content.Append(xObjectname);
+                content.Append(">>" + StringConstants.NewLine);
+
+                content.Append(">> >>");
 
                 SetContent(content);
 

@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\TextAlignment.cs" />
+    <Compile Include="Contents\Graphics\XObjectFactory.cs" />
+    <Compile Include="Contents\Graphics\XObjects.cs" />
     <Compile Include="Extensions\IntExtensions.cs" />
     <Compile Include="Fonts\FontDefinition.cs" />
     <Compile Include="Fonts\FontDescriptor.cs" />

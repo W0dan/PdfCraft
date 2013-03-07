@@ -15,7 +15,7 @@ namespace PdfCraft.API
     {
         private readonly Document _owner;
         private readonly List<TextCommand> _textCommands = new List<TextCommand>();
-        private readonly HashSet<string> _fontNames = new HashSet<string>();
+        private readonly HashSet<string> _fontReferences = new HashSet<string>();
         private readonly Size _size;
 
         internal TextBox(Rectangle sizeAndPosition, Document owner)
@@ -35,9 +35,9 @@ namespace PdfCraft.API
             var font = _owner.AddFont(properties.Name);
             _textCommands.Add(new TextCommand(Command.SetFont, new FontDefinition(font, properties.Size)));
 
-            var fontname = string.Format("{0} {1} 0 R ", font.FontName, font.Number);
-            if (!_fontNames.Contains(fontname))
-                _fontNames.Add(fontname);
+            var fontReference = string.Format("{0} {1} 0 R ", font.FontName, font.Number);
+            if (!_fontReferences.Contains(fontReference))
+                _fontReferences.Add(fontReference);
         }
 
         public void SetAlignment(TextAlignment alignment)
@@ -47,7 +47,7 @@ namespace PdfCraft.API
 
         public IEnumerable<string> GetFontnames()
         {
-            return _fontNames;
+            return _fontReferences;
         }
 
         public void SetColor(Color color)

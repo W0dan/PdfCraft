@@ -14,6 +14,7 @@ namespace PdfCraft.API
     {
         private readonly Document _owner;
         private readonly List<GraphicsCommand> _graphicsCommands = new List<GraphicsCommand>();
+        private readonly HashSet<string> _xObjectReferences = new HashSet<string>();
 
 
         public GraphicsCanvas(Document owner)
@@ -41,7 +42,6 @@ namespace PdfCraft.API
             _graphicsCommands.Add(new GraphicsCommand(Command.DrawLine, lineDefinition));
         }
 
-
         public void DrawBox(Point topLeft, Size size)
         {
             var boxDefinition = new BoxDefinition(topLeft.GetPointInMillimeters(), size.GetSizeInMillimeters());
@@ -56,12 +56,19 @@ namespace PdfCraft.API
 
         public void DrawImage(Point topLeft, Size size, ImageType imageType, string sourceFile)
         {
-            
+            var imageDefinition = new ImageDefinition(topLeft, size, imageType, sourceFile);
+            _graphicsCommands.Add(new GraphicsCommand(Command.DrawImage, imageDefinition));
         }
 
         public void DrawImage(Point topLeft, Size size, ImageType imageType, Stream sourceStream)
         {
-            
+            var imageDefinition = new ImageDefinition(topLeft, size, imageType, sourceStream);
+            _graphicsCommands.Add(new GraphicsCommand(Command.DrawImage, imageDefinition));
+        }
+
+        public IEnumerable<string> GetXObjectnames()
+        {
+            return _xObjectReferences;
         }
 
         internal override string Content
@@ -102,13 +109,34 @@ namespace PdfCraft.API
                             var R = circle.Radius;
                             var l = (int)Math.Round(kappa * R, 3);
 
-                        //Xc Yc+R m 
-                        //Xc+l Yc+R Xc+R Yc+l Xc+R Yc c 
-                        //Xc+R Yc-l Xc+l Yc-R Xc Yc-R c 
-                        //Xc-l Yc-R Xc-R Yc-l Xc-R Yc c 
-                        //Xc-R Yc+l Xc-l Yc+R Xc Yc+R c B
+                            //Xc Yc+R m 
+                            //Xc+l Yc+R Xc+R Yc+l Xc+R Yc c 
+                            //Xc+R Yc-l Xc+l Yc-R Xc Yc-R c 
+                            //Xc-l Yc-R Xc-R Yc-l Xc-R Yc c 
+                            //Xc-R Yc+l Xc-l Yc+R Xc Yc+R c B
                             const string circleFormat = "{0} {1} m {2} {1} {3} {4} {3} {5} c {3} {6} {2} {7} {0} {7} c {8} {7} {9} {6} {9} {5} c {9} {4} {8} {1} {0} {1} c B ";
                             sb.Append(string.Format(circleFormat, Xc, Yc + R, Xc + l, Xc + R, Yc + l, Yc, Yc - l, Yc - R, Xc - l, Xc - R));
+
+                            break;
+                        case Command.DrawImage:
+                            var imageDefinition = (ImageDefinition)command.Data;
+
+                            XObject xObject;
+                            if (imageDefinition.SourceFile != null)
+                                xObject = _owner.AddXObject(imageDefinition.ImageType, imageDefinition.SourceFile);
+                            else
+                                xObject = _owner.AddXObject(imageDefinition.ImageType, imageDefinition.SourceStream);
+
+                            var imageReference = string.Format("{0} {1} 0 R ", xObject.XObjectname, xObject.Number);
+                            _xObjectReferences.Add(imageReference);
+
+                            const string imageFormat = "q {0} 0 0 {1} {2} {3} cm {4} Do Q ";
+                            sb.Append(string.Format(imageFormat,
+                                imageDefinition.Size.Width,
+                                imageDefinition.Size.Height,
+                                imageDefinition.TopLeft.X,
+                                imageDefinition.TopLeft.Y,
+                                xObject.XObjectname));
 
                             break;
                     }
@@ -116,6 +144,59 @@ namespace PdfCraft.API
 
                 return sb.ToString();
             }
+        }
+    }
+
+    public class ImageDefinition
+    {
+        private readonly Point _topLeft;
+        private readonly Size _size;
+        private readonly ImageType _imageType;
+        private readonly Stream _sourceStream;
+        private readonly string _sourceFile;
+
+        public ImageDefinition(Point topLeft, Size size, ImageType imageType, string sourceFile)
+            : this(topLeft, size, imageType)
+        {
+            _sourceFile = sourceFile;
+        }
+
+        public ImageDefinition(Point topLeft, Size size, ImageType imageType, Stream sourceStream)
+            : this(topLeft, size, imageType)
+        {
+            _sourceStream = sourceStream;
+        }
+
+        public ImageDefinition(Point topLeft, Size size, ImageType imageType)
+        {
+            _topLeft = topLeft;
+            _size = size;
+            _imageType = imageType;
+        }
+
+        public Point TopLeft
+        {
+            get { return _topLeft; }
+        }
+
+        public Size Size
+        {
+            get { return _size; }
+        }
+
+        public ImageType ImageType
+        {
+            get { return _imageType; }
+        }
+
+        public Stream SourceStream
+        {
+            get { return _sourceStream; }
+        }
+
+        public string SourceFile
+        {
+            get { return _sourceFile; }
         }
     }
 }

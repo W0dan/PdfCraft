@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using PdfCraft.API;
@@ -27,6 +28,25 @@ namespace PdfCraft
         public void AddCanvas(GraphicsCanvas canvas)
         {
             _parts.Add(canvas);
+        }
+
+        public IEnumerable<string> GetXObjectnames()
+        {
+            var result = new HashSet<string>();
+
+            foreach (var part in _parts.Where(x => !x.IsText))
+            {
+                var canvas = (GraphicsCanvas)part;
+                var xObjectnames = canvas.GetXObjectnames();
+
+                foreach (var xObjectname in xObjectnames
+                    .Where(xObjectname => !result.Contains(xObjectname)))
+                {
+                    result.Add(xObjectname);
+                }
+            }
+
+            return result;
         }
 
         public IEnumerable<string> GetFontnames()
