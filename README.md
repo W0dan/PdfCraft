@@ -3,11 +3,14 @@ PdfCraft
 
 A library to create PDF's
 
-The library is meant to provide a means to generate PDF-files without file-access and as fast as possible, while keeping the API developer-friendly. Given these constraints, I tried to put as many features in it. However, it is a work in progress and not finished by far.
+The library is meant to provide a means to generate PDF-files without file-access and as fast as possible, while
+keeping the API developer-friendly. Given these constraints, I tried to put as many features in it. However, it
+is a work in progress and not finished by far.
 
 For examples on how to use this library, I'd like to refer to the (unit-)tests, especially those under 'API'.
 
-The unit tests can drop their output in a file by uncommenting or adding a call to the method 'DumpToRandomFile()'. By default, no test shall write to the filesystem. I tend to dump the output only for the test I'm currently working on.
+The unit tests can drop their output in a file by uncommenting or adding a call to the method 'DumpToRandomFile()'.
+Most tests don't write to the filesystem. I tend to dump the output only for the test I'm currently working on.
 
 Currently on the TODO-list:
 - Improve the support for the Base 14 Type 1 fonts,
