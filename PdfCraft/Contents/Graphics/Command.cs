@@ -7,6 +7,7 @@
         DrawLine,
         DrawBox,
         DrawCircle,
-        DrawImage
+        DrawImage,
+        DrawPoligon
     }
 }

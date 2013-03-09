@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using PdfCraft.Constants;
 using PdfCraft.Contents;
@@ -54,6 +55,29 @@ namespace PdfCraft.API
             _graphicsCommands.Add(new GraphicsCommand(Command.DrawCircle, circleDefinition));
         }
 
+        public void DrawClosedPoligon(params Point[] points)
+        {
+            DrawPoligon(points, true);
+        }
+
+        public void DrawPoligon(params Point[] points)
+        {
+            DrawPoligon(points, false);
+        }
+
+        private void DrawPoligon(Point[] points, bool isClosed)
+        {
+            if (points.Length < 2)
+                throw new ArgumentException("a poligon can only be created from at least 2 points", "points");
+
+            var pointsInMm = new Point[points.Length];
+            for (var i = 0; i < points.Length; i++)
+                pointsInMm[i] = points[i].GetPointInMillimeters();
+
+            var poligonDefinition = new PoligonDefinition(points, isClosed);
+            _graphicsCommands.Add(new GraphicsCommand(Command.DrawPoligon, poligonDefinition));
+        }
+
         public void DrawImage(Point topLeft, Size size, ImageType imageType, string sourceFile)
         {
             var xObject = _owner.AddXObject(imageType, sourceFile);
@@ -94,15 +118,38 @@ namespace PdfCraft.API
                             sb.Append(strokeColor.ToPdfColor() + " RG ");
                             break;
                         case Command.DrawLine:
-                            var lineDefinition = (LineDefinition)command.Data;
-                            var startY = Size.Height - lineDefinition.Start.Y;
-                            var endY = Size.Height - lineDefinition.End.Y;
-                            sb.Append(string.Format("{0} {1} m {2} {3} l S ", lineDefinition.Start.X, startY, lineDefinition.End.X, endY));
+                            {
+                                var lineDefinition = (LineDefinition)command.Data;
+                                var startY = Size.Height - lineDefinition.Start.Y;
+                                var endY = Size.Height - lineDefinition.End.Y;
+                                sb.Append(string.Format("{0} {1} m {2} {3} l S ",
+                                    lineDefinition.Start.X, startY, lineDefinition.End.X, endY));
+                            }
                             break;
                         case Command.DrawBox:
                             var boxDefinition = (BoxDefinition)command.Data;
                             var topLeftY = Size.Height - boxDefinition.TopLeft.Y - boxDefinition.Size.Height;
                             sb.Append(string.Format("{0} {1} {2} {3} re S ", boxDefinition.TopLeft.X, topLeftY, boxDefinition.Size.Width, boxDefinition.Size.Height));
+                            break;
+                        case Command.DrawPoligon:
+                            {
+                                var poligonDefinition = (PoligonDefinition)command.Data;
+
+                                var startY = Size.Height - poligonDefinition.Points.First().Y;
+                                const string startPointFormat = "{0} {1} m" + StringConstants.NewLine;
+                                sb.Append(string.Format(startPointFormat, poligonDefinition.Points.First().X, startY));
+
+                                const string poligonPointFormat = "{0} {1} l ";
+                                for (var i = 1; i < poligonDefinition.Points.Length; i++)
+                                {
+                                    var poligonY = Size.Height - poligonDefinition.Points[i].Y;
+                                    sb.Append(string.Format(poligonPointFormat, poligonDefinition.Points[i].X, poligonY));
+                                }
+
+                                sb.Append(poligonDefinition.IsClosed ? "b" : "S");
+
+                                sb.Append(StringConstants.NewLine);
+                            }
                             break;
                         case Command.DrawCircle:
                             const double kappa = 0.552284749830794;
@@ -144,67 +191,6 @@ namespace PdfCraft.API
 
                 return sb.ToString();
             }
-        }
-    }
-
-    public class ImageDefinition
-    {
-        private readonly Point _topLeft;
-        private readonly Size _size;
-        private readonly ImageType _imageType;
-        private readonly Stream _sourceStream;
-        private readonly string _sourceFile;
-        private readonly XObject _xObject;
-
-        public ImageDefinition(Point topLeft, Size size, ImageType imageType, string sourceFile, XObject xObject)
-            : this(topLeft, size, imageType)
-        {
-            _sourceFile = sourceFile;
-            _xObject = xObject;
-        }
-
-        public ImageDefinition(Point topLeft, Size size, ImageType imageType, Stream sourceStream, XObject xObject)
-            : this(topLeft, size, imageType)
-        {
-            _sourceStream = sourceStream;
-            _xObject = xObject;
-        }
-
-        public ImageDefinition(Point topLeft, Size size, ImageType imageType)
-        {
-            _topLeft = topLeft;
-            _size = size;
-            _imageType = imageType;
-        }
-
-        public Point TopLeft
-        {
-            get { return _topLeft; }
-        }
-
-        public Size Size
-        {
-            get { return _size; }
-        }
-
-        public ImageType ImageType
-        {
-            get { return _imageType; }
-        }
-
-        public Stream SourceStream
-        {
-            get { return _sourceStream; }
-        }
-
-        public string SourceFile
-        {
-            get { return _sourceFile; }
-        }
-
-        public XObject XObject
-        {
-            get { return _xObject; }
         }
     }
 }
