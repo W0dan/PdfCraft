@@ -60,8 +60,9 @@
     <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_colored_text_wrapped_is_added.cs" />
     <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_text_is_added.cs" />
     <Compile Include="Concerning_the_API\Given_a_document\When_CreateTextBox_is_called.cs" />
+    <Compile Include="Concerning_the_API\Given_a_GraphicsCanvas\When_DrawImage_is_called_with_a_filename.cs" />
     <Compile Include="Concerning_the_API\Given_a_GraphicsCanvas\When_DrawCircle_is_called.cs" />
-    <Compile Include="Concerning_the_API\Given_a_GraphicsCanvas\When_DrawImage_is_called.cs" />
+    <Compile Include="Concerning_the_API\Given_a_GraphicsCanvas\When_DrawImage_is_called_with_a_stream.cs" />
     <Compile Include="Concerning_the_API\Given_a_TextBox\When_the_color_is_set_to_gray.cs" />
     <Compile Include="Concerning_the_API\Given_a_TextBox\When_text_is_added.cs" />
     <Compile Include="Concerning_the_API\Given_a_TextBox\When_the_color_is_set_to_black.cs" />
@@ -103,7 +104,10 @@
       <Name>PdfCraft</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Concerning_the_API\Given_a_GraphicsCanvas\image.jpg" />
+    <EmbeddedResource Include="Concerning_the_API\Given_a_GraphicsCanvas\image1.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

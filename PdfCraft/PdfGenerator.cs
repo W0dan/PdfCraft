@@ -6,14 +6,14 @@ namespace PdfCraft
 {
     internal class PdfGenerator
     {
-        private readonly Dictionary<int, string> _xref;
+        private readonly Dictionary<int, int> _xref;
         private readonly IByteContainer _content;
         private int _offset;
         private int _catalogObjectNumber;
 
         public PdfGenerator()
         {
-            _xref = new Dictionary<int, string>();
+            _xref = new Dictionary<int, int>();
             _content = ByteContainerFactory.CreateByteContainer("%PDF-1.7" + StringConstants.NewLine);
             _offset = 9;
         }
@@ -26,7 +26,7 @@ namespace PdfCraft
 
         public void AddObject(BasePdfObject obj)
         {
-            _xref.Add(obj.Number, string.Format("{0:0000000000} 00000 n", _offset) + StringConstants.NewLine);
+            _xref.Add(obj.Number, _offset);
             _content.Append(obj.Content);
             _offset += obj.Length;
         }
@@ -39,8 +39,8 @@ namespace PdfCraft
 
             for (var i = 0; i < _xref.Count; i++)
             {
-                var xrefEntry = _xref[i + 1];
-                _content.Append(xrefEntry);
+                var offset = _xref[i + 1];
+                _content.Append(string.Format("{0:0000000000} 00000 n", offset) + StringConstants.NewLine);
             }
 
             _content.Append("trailer" + StringConstants.NewLine);

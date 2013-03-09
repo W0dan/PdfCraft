@@ -6,7 +6,7 @@ using PdfCraft.Contents.Graphics;
 
 namespace Tests.Concerning_the_API.Given_a_GraphicsCanvas
 {
-    public class When_DrawImage_is_called : BaseTest
+    public class When_DrawImage_is_called_with_a_stream : BaseTest
     {
         private Document _document;
         private GraphicsCanvas _sut;
@@ -23,10 +23,16 @@ namespace Tests.Concerning_the_API.Given_a_GraphicsCanvas
 
         public override void Act()
         {
-            _sut.DrawImage(new Point(75, 50), new Size(25, 75), ImageType.Jpg, @"c:\temp\image.jpg");
-            _sut.DrawImage(new Point(50, 75), new Size(75, 25), ImageType.Jpg, @"c:\temp\image.jpg");
+            var image = GetType().Assembly
+                     .GetManifestResourceStream("Tests.Concerning_the_API.Given_a_GraphicsCanvas.image.jpg");
 
-            _sut.DrawImage(new Point(50, 175), new Size(75, 25), ImageType.Jpg, @"c:\temp\image1.jpg");
+            _sut.DrawImage(new Point(75, 50), new Size(25, 75), ImageType.Jpg, image);
+            _sut.DrawImage(new Point(50, 75), new Size(75, 25), ImageType.Jpg, image);
+
+            var image1 = GetType().Assembly
+                    .GetManifestResourceStream("Tests.Concerning_the_API.Given_a_GraphicsCanvas.image1.jpg");
+
+            _sut.DrawImage(new Point(50, 175), new Size(75, 25), ImageType.Jpg, image1);
         }
 
         [Test]
