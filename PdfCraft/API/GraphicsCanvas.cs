@@ -56,13 +56,17 @@ namespace PdfCraft.API
 
         public void DrawImage(Point topLeft, Size size, ImageType imageType, string sourceFile)
         {
-            var imageDefinition = new ImageDefinition(topLeft, size, imageType, sourceFile);
+            var xObject = _owner.AddXObject(imageType, sourceFile);
+            var imageDefinition = new ImageDefinition(topLeft.GetPointInMillimeters(), size.GetSizeInMillimeters(), imageType, sourceFile, xObject);
+
             _graphicsCommands.Add(new GraphicsCommand(Command.DrawImage, imageDefinition));
         }
 
         public void DrawImage(Point topLeft, Size size, ImageType imageType, Stream sourceStream)
         {
-            var imageDefinition = new ImageDefinition(topLeft, size, imageType, sourceStream);
+            var xObject = _owner.AddXObject(imageType, sourceStream);
+            var imageDefinition = new ImageDefinition(topLeft.GetPointInMillimeters(), size.GetSizeInMillimeters(), imageType, sourceStream, xObject);
+
             _graphicsCommands.Add(new GraphicsCommand(Command.DrawImage, imageDefinition));
         }
 
@@ -121,21 +125,24 @@ namespace PdfCraft.API
                         case Command.DrawImage:
                             var imageDefinition = (ImageDefinition)command.Data;
 
-                            XObject xObject;
-                            if (imageDefinition.SourceFile != null)
-                                xObject = _owner.AddXObject(imageDefinition.ImageType, imageDefinition.SourceFile);
-                            else
-                                xObject = _owner.AddXObject(imageDefinition.ImageType, imageDefinition.SourceStream);
+                            //XObject xObject;
+                            //if (imageDefinition.SourceFile != null)
+                            //    xObject = _owner.AddXObject(imageDefinition.ImageType, imageDefinition.SourceFile);
+                            //else
+                            //    xObject = _owner.AddXObject(imageDefinition.ImageType, imageDefinition.SourceStream);
+
+                            var xObject = imageDefinition.XObject;
 
                             var imageReference = string.Format("{0} {1} 0 R ", xObject.XObjectname, xObject.Number);
                             _xObjectReferences.Add(imageReference);
 
                             const string imageFormat = "q {0} 0 0 {1} {2} {3} cm {4} Do Q ";
+                            var yPosition = Size.Height - imageDefinition.TopLeft.Y;
                             sb.Append(string.Format(imageFormat,
                                 imageDefinition.Size.Width,
                                 imageDefinition.Size.Height,
                                 imageDefinition.TopLeft.X,
-                                imageDefinition.TopLeft.Y,
+                                yPosition,
                                 xObject.XObjectname));
 
                             break;
@@ -154,17 +161,20 @@ namespace PdfCraft.API
         private readonly ImageType _imageType;
         private readonly Stream _sourceStream;
         private readonly string _sourceFile;
+        private readonly XObject _xObject;
 
-        public ImageDefinition(Point topLeft, Size size, ImageType imageType, string sourceFile)
+        public ImageDefinition(Point topLeft, Size size, ImageType imageType, string sourceFile, XObject xObject)
             : this(topLeft, size, imageType)
         {
             _sourceFile = sourceFile;
+            _xObject = xObject;
         }
 
-        public ImageDefinition(Point topLeft, Size size, ImageType imageType, Stream sourceStream)
+        public ImageDefinition(Point topLeft, Size size, ImageType imageType, Stream sourceStream, XObject xObject)
             : this(topLeft, size, imageType)
         {
             _sourceStream = sourceStream;
+            _xObject = xObject;
         }
 
         public ImageDefinition(Point topLeft, Size size, ImageType imageType)
@@ -197,6 +207,11 @@ namespace PdfCraft.API
         public string SourceFile
         {
             get { return _sourceFile; }
+        }
+
+        public XObject XObject
+        {
+            get { return _xObject; }
         }
     }
 }

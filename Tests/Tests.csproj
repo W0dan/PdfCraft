@@ -61,6 +61,7 @@
     <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_text_is_added.cs" />
     <Compile Include="Concerning_the_API\Given_a_document\When_CreateTextBox_is_called.cs" />
     <Compile Include="Concerning_the_API\Given_a_GraphicsCanvas\When_DrawCircle_is_called.cs" />
+    <Compile Include="Concerning_the_API\Given_a_GraphicsCanvas\When_DrawImage_is_called.cs" />
     <Compile Include="Concerning_the_API\Given_a_TextBox\When_the_color_is_set_to_gray.cs" />
     <Compile Include="Concerning_the_API\Given_a_TextBox\When_text_is_added.cs" />
     <Compile Include="Concerning_the_API\Given_a_TextBox\When_the_color_is_set_to_black.cs" />

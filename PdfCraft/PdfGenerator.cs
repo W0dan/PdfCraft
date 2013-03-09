@@ -6,14 +6,14 @@ namespace PdfCraft
 {
     internal class PdfGenerator
     {
-        private readonly List<string> _xref;
+        private readonly Dictionary<int, string> _xref;
         private readonly IByteContainer _content;
         private int _offset;
         private int _catalogObjectNumber;
 
         public PdfGenerator()
         {
-            _xref = new List<string> { "0000000000 65535 f" + StringConstants.NewLine };
+            _xref = new Dictionary<int, string>();
             _content = ByteContainerFactory.CreateByteContainer("%PDF-1.7" + StringConstants.NewLine);
             _offset = 9;
         }
@@ -26,7 +26,7 @@ namespace PdfCraft
 
         public void AddObject(BasePdfObject obj)
         {
-            _xref.Add(string.Format("{0:0000000000} 00000 n", _offset) + StringConstants.NewLine);
+            _xref.Add(obj.Number, string.Format("{0:0000000000} 00000 n", _offset) + StringConstants.NewLine);
             _content.Append(obj.Content);
             _offset += obj.Length;
         }
@@ -34,9 +34,14 @@ namespace PdfCraft
         public byte[] GetBytes()
         {
             _content.Append("xref" + StringConstants.NewLine);
-            _content.Append(string.Format("0 {0}", _xref.Count) + StringConstants.NewLine);
-            foreach (var xrefEntry in _xref)
+            _content.Append(string.Format("0 {0}", _xref.Count + 1) + StringConstants.NewLine);
+            _content.Append("0000000000 65535 f" + StringConstants.NewLine);
+
+            for (var i = 0; i < _xref.Count; i++)
+            {
+                var xrefEntry = _xref[i + 1];
                 _content.Append(xrefEntry);
+            }
 
             _content.Append("trailer" + StringConstants.NewLine);
             _content.Append(string.Format("<< /Size {0}", _xref.Count) + StringConstants.NewLine);

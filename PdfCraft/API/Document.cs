@@ -85,6 +85,11 @@ namespace PdfCraft.API
                 generator.AddObject(fontObject.Value.FontDescriptor);
             }
 
+            foreach (var xObject in _xObjects.ToDictionary())
+            {
+                generator.AddObject(xObject.Value);
+            }
+
             foreach (var pageObject in _pageObjects)
             {
                 generator.AddObject(pageObject.Contents);
