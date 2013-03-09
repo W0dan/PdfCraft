@@ -10,8 +10,8 @@ For examples on how to use this library, I'd like to refer to the (unit-)tests, 
 The unit tests can drop their output in a file by uncommenting or adding a call to the method 'DumpToRandomFile()'. By default, no test shall write to the filesystem. I tend to dump the output only for the test I'm currently working on.
 
 Currently on the TODO-list:
-- improve the support for the Base 14 Type 1 fonts,
-- add support for images,
+- Improve the support for the Base 14 Type 1 fonts,
+- improve support for images,
 - add support for TrueType fonts.
 
 
