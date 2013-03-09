@@ -124,20 +124,13 @@ namespace PdfCraft.API
                             break;
                         case Command.DrawImage:
                             var imageDefinition = (ImageDefinition)command.Data;
-
-                            //XObject xObject;
-                            //if (imageDefinition.SourceFile != null)
-                            //    xObject = _owner.AddXObject(imageDefinition.ImageType, imageDefinition.SourceFile);
-                            //else
-                            //    xObject = _owner.AddXObject(imageDefinition.ImageType, imageDefinition.SourceStream);
-
                             var xObject = imageDefinition.XObject;
 
                             var imageReference = string.Format("{0} {1} 0 R ", xObject.XObjectname, xObject.Number);
                             _xObjectReferences.Add(imageReference);
 
                             const string imageFormat = "q {0} 0 0 {1} {2} {3} cm {4} Do Q ";
-                            var yPosition = Size.Height - imageDefinition.TopLeft.Y;
+                            var yPosition = Size.Height - imageDefinition.TopLeft.Y - imageDefinition.Size.Height;
                             sb.Append(string.Format(imageFormat,
                                 imageDefinition.Size.Width,
                                 imageDefinition.Size.Height,

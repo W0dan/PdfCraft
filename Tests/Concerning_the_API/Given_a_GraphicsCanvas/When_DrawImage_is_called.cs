@@ -23,7 +23,10 @@ namespace Tests.Concerning_the_API.Given_a_GraphicsCanvas
 
         public override void Act()
         {
-            _sut.DrawImage(new Point(50, 50), new Size(100, 100), ImageType.Jpg, @"c:\temp\image.jpg");
+            _sut.DrawImage(new Point(75, 50), new Size(25, 75), ImageType.Jpg, @"c:\temp\image.jpg");
+            _sut.DrawImage(new Point(50, 75), new Size(75, 25), ImageType.Jpg, @"c:\temp\image.jpg");
+
+            _sut.DrawImage(new Point(50, 175), new Size(75, 25), ImageType.Jpg, @"c:\temp\image1.jpg");
         }
 
         [Test]
