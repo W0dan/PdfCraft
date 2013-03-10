@@ -45,11 +45,11 @@ namespace Tests.Concerning_the_API.Given_a_document
             var textbox = _sut.CreateTextBox(new Rectangle(location, size));
             textbox.SetAlignment(TextAlignment.Justify);
             textbox.SetFont(new FontProperties { Name = "Helvetica", Size = fontSize });
-            var realisticText_pt1 = "The select Model is the most widely available I/O model in Winsock. " +
+            var realisticText_pt1 = "The select Model is the most widely\\available I/O model in Winsock. " +
                                     "We call it the select model because it centers on using the select function to " +
                                     "manage I/O. The design of this model originated on Unix-based computers featuring " +
                                     "Berkeley socket implementations. The select model was incorporated into Winsock 1.1 " +
-                                    "to allow applications that want to avoid blocking on socket calls the ability to manage " +
+                                    "to allow applications that want to avoid 5 € blocking on socket calls the ability to manage " +
                                     "multiple sockets in an organized manner. Because Winsock 1.1 is backward-compatible " +
                                     "with Berkeley socket implementations, a Berkeley socket application that uses the select " +
                                     "function should ";

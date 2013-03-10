@@ -37,7 +37,7 @@ namespace Tests.Concerning_the_API.Given_a_TextBox
                     var font = _document.Fonts.ToDictionary()[_properties.GetHashCode()];
                     var expectedValue = string.Format("{0} {1} Tf", font.FontName, _fontsize);
 
-                    Assert.IsTrue(_sut.Content.Contains(expectedValue), expectedValue + " not found in TextBox");
+                    Assert.IsTrue(_sut.Content.ToString().Contains(expectedValue), expectedValue + " not found in TextBox");
                 });
         }
     }

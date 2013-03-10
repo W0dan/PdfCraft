@@ -34,7 +34,7 @@ namespace Tests.Concerning_the_API.Given_a_TextBox
             {
                 var expectedValue = string.Format("{0} {1} {2} rg", _color.R, _color.G, _color.B);
 
-                Assert.IsTrue(_sut.Content.Contains(expectedValue), expectedValue + " not found in TextBox");
+                Assert.IsTrue(_sut.Content.ToString().Contains(expectedValue), expectedValue + " not found in TextBox");
             });
         }
     }

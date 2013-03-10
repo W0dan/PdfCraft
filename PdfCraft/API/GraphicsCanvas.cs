@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using PdfCraft.Constants;
+using PdfCraft.Containers;
 using PdfCraft.Contents;
 using PdfCraft.Contents.Graphics;
 using PdfCraft.Extensions;
@@ -99,11 +100,12 @@ namespace PdfCraft.API
             return _xObjectReferences;
         }
 
-        internal override string Content
+        internal override IByteContainer Content
         {
             get
             {
-                var sb = new StringBuilder("0.5 w" + StringConstants.NewLine);
+                var sb = ByteContainerFactory.CreateByteContainer("0.5 w" + StringConstants.NewLine);
+                //var sb = new StringBuilder("0.5 w" + StringConstants.NewLine);
 
                 foreach (var command in _graphicsCommands)
                 {
@@ -189,7 +191,7 @@ namespace PdfCraft.API
                     }
                 }
 
-                return sb.ToString();
+                return sb;
             }
         }
     }

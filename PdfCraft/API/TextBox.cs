@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using PdfCraft.Constants;
+using PdfCraft.Containers;
 using PdfCraft.Contents;
 using PdfCraft.Contents.Text;
 using PdfCraft.Extensions;
@@ -57,6 +58,10 @@ namespace PdfCraft.API
 
         public void AddText(string text)
         {
+            text = text.Replace(@"\", @"\\");
+            text = text.Replace(@"(", @"\(");
+            text = text.Replace(@")", @"\)");
+            text = text.Replace("€", @"\200");
             _textCommands.Add(new TextCommand(Command.AddText, text));
         }
 
@@ -65,7 +70,7 @@ namespace PdfCraft.API
             get { return _owner; }
         }
 
-        internal override string Content
+        internal override IByteContainer Content
         {
             get
             {
@@ -144,9 +149,9 @@ namespace PdfCraft.API
             }
         }
 
-        private string WriteBufferToPdf(IEnumerable<TextboxLineBuffer> buffer)
+        private IByteContainer WriteBufferToPdf(IEnumerable<TextboxLineBuffer> buffer)
         {
-            var sbBuffered = new StringBuilder();
+            var sbBuffered = ByteContainerFactory.CreateByteContainer();
             sbBuffered.Append(string.Format("1 0 0 1 {0} {1} Tm ", Position.X, Position.Y));
 
             var textLeadingIsSet = false;
@@ -242,70 +247,7 @@ namespace PdfCraft.API
 
             }
 
-            return sbBuffered.ToString();
-        }
-    }
-
-    /// <summary>
-    /// defines a line of text
-    /// </summary>
-    internal class TextboxLineBuffer
-    {
-        private readonly TextAlignment _currentAlignment;
-        private readonly List<TextboxLinePart> _parts = new List<TextboxLinePart>();
-
-        public TextboxLineBuffer(TextAlignment currentAlignment)
-        {
-            _currentAlignment = currentAlignment;
-        }
-
-        public void AddPart(TextboxLinePart part)
-        {
-            _parts.Add(part);
-        }
-
-        public List<TextboxLinePart> Parts { get { return _parts; } }
-
-        public TextAlignment CurrentAlignment
-        {
-            get { return _currentAlignment; }
-        }
-
-        public bool Linefeed { get; set; }
-    }
-
-    /// <summary>
-    /// defines a part of a line of text, with layout
-    /// </summary>
-    internal class TextboxLinePart
-    {
-        private readonly BreakPoint _textItem;
-        private readonly FontDefinition _font;
-        private readonly Color _color;
-
-        public TextboxLinePart(BreakPoint textItem, FontDefinition font, Color color, bool endOfLine)
-        {
-            _textItem = textItem;
-            _font = font;
-            _color = color;
-            EndOfLine = endOfLine;
-        }
-
-        public bool EndOfLine { get; set; }
-
-        public BreakPoint TextItem
-        {
-            get { return _textItem; }
-        }
-
-        public FontDefinition Font
-        {
-            get { return _font; }
-        }
-
-        public Color Color
-        {
-            get { return _color; }
+            return sbBuffered;
         }
     }
 }

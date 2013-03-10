@@ -37,6 +37,21 @@ namespace PdfCraft.Contents.Text
                     lengthSinceLastBreak = 0;
                     lastBreakPosition = i;
                 }
+                else if (c == '\\')
+                {
+                    //next value(s) are escaped
+                    c = text[++i];
+                    if (!IsRegularEscapedValue(c))
+                    {
+                        var octalCode = new string(c, 1);
+                        octalCode += text[++i];
+                        octalCode += text[++i];
+
+                        var charCode = OctalToDecimal(octalCode);
+
+                        c = (char)charCode;
+                    }
+                }
 
                 var glyphWidth = currentFont.GetWidth(c);
 
@@ -74,35 +89,23 @@ namespace PdfCraft.Contents.Text
             return breakPositions;
         }
 
+        private static bool IsRegularEscapedValue(char c)
+        {
+            return c == '\\' || c == '(' || c == ')';
+        }
+
+        private static int OctalToDecimal(string octalValue)
+        {
+            var factor = 1;
+            var result = 0;
+            for (var i = octalValue.Length - 1; i >= 0; i--)
+            {
+                result += int.Parse(new string(octalValue[i], 1)) * factor;
+                factor *= 8;
+            }
+            return result;
+        }
+
         public int LineLength { get; set; }
-    }
-
-    internal class BreakPoint
-    {
-        private readonly bool _hasToBreak;
-        private readonly int _lengthInPoints;
-        private readonly string _text;
-
-        public BreakPoint(bool hasToBreak, int lengthInPoints, string text)
-        {
-            _hasToBreak = hasToBreak;
-            _lengthInPoints = lengthInPoints;
-            _text = text;
-        }
-
-        public bool HasToBreak
-        {
-            get { return _hasToBreak; }
-        }
-
-        public string Text
-        {
-            get { return _text; }
-        }
-
-        public int LengthInPoints
-        {
-            get { return _lengthInPoints; }
-        }
     }
 }

@@ -1,8 +1,10 @@
-﻿namespace PdfCraft.Contents
+﻿using PdfCraft.Containers;
+
+namespace PdfCraft.Contents
 {
     public abstract class ContentsPart
     {
-        internal abstract string Content { get; }
+        internal abstract IByteContainer Content { get; }
 
         internal abstract bool IsText { get; }
     }

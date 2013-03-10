@@ -46,6 +46,9 @@
     <Compile Include="Contents\Graphics\PoligonDefinition.cs" />
     <Compile Include="Contents\Graphics\XObjectFactory.cs" />
     <Compile Include="Contents\Graphics\XObjects.cs" />
+    <Compile Include="Contents\Text\BreakPoint.cs" />
+    <Compile Include="Contents\Text\TextboxLineBuffer.cs" />
+    <Compile Include="Contents\Text\TextboxLinePart.cs" />
     <Compile Include="Extensions\IntExtensions.cs" />
     <Compile Include="Fonts\FontDefinition.cs" />
     <Compile Include="Fonts\FontDescriptor.cs" />
