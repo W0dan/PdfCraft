@@ -19,6 +19,9 @@ namespace PdfCraft.API
         private readonly HashSet<string> _fontReferences = new HashSet<string>();
         private readonly Size _size;
 
+        private readonly HashSet<FontStyle> _fontStyles = new HashSet<FontStyle>();
+        private FontProperties _currentFont;
+
         internal TextBox(Rectangle sizeAndPosition, Document owner)
         {
             _size = new Size(sizeAndPosition.Width.ToMillimeters(), sizeAndPosition.Height.ToMillimeters());
@@ -31,14 +34,56 @@ namespace PdfCraft.API
 
         public Point Position { get; set; }
 
-        public void SetFont(FontProperties properties)
+        public void SetFont(FontProperties properties, bool onlyStyleChanged = false)
         {
-            var font = _owner.AddFont(properties.Name);
+            var fontName = properties.Name;
+            if (properties.Name == "Helvetica" || properties.Name == "Courier")
+            {
+                if (_fontStyles.Count > 0)
+                    fontName += "-";
+                if (_fontStyles.Contains(FontStyle.Bold))
+                    fontName += "Bold";
+                if (_fontStyles.Contains(FontStyle.Italic))
+                    fontName += "Oblique";
+            }
+
+            if (!onlyStyleChanged)
+                _currentFont = properties;
+
+            var font = _owner.AddFont(fontName);
             _textCommands.Add(new TextCommand(Command.SetFont, new FontDefinition(font, properties.Size)));
 
             var fontReference = string.Format("{0} {1} 0 R ", font.FontName, font.Number);
             if (!_fontReferences.Contains(fontReference))
                 _fontReferences.Add(fontReference);
+        }
+
+        public void SetBoldOn()
+        {
+            if (!_fontStyles.Contains(FontStyle.Bold))
+                _fontStyles.Add(FontStyle.Bold);
+            SetFont(_currentFont, true);
+        }
+
+        public void SetBoldOff()
+        {
+            if (_fontStyles.Contains(FontStyle.Bold))
+                _fontStyles.Remove(FontStyle.Bold);
+            SetFont(_currentFont, true);
+        }
+
+        public void SetItalicOn()
+        {
+            if (!_fontStyles.Contains(FontStyle.Italic))
+                _fontStyles.Add(FontStyle.Italic);
+            SetFont(_currentFont, true);
+        }
+
+        public void SetItalicOff()
+        {
+            if (_fontStyles.Contains(FontStyle.Italic))
+                _fontStyles.Remove(FontStyle.Italic);
+            SetFont(_currentFont, true);
         }
 
         public void SetAlignment(TextAlignment alignment)
@@ -102,6 +147,11 @@ namespace PdfCraft.API
             text = text.Replace("ä", @"\344");
             text = text.Replace("æ", @"\346");
             text = text.Replace("à", @"\340");
+
+            text = text.Replace("º", @"\272");
+            text = text.Replace("°", @"\260");
+            text = text.Replace("–", @"\226");
+            text = text.Replace("ë", @"\353");
             _textCommands.Add(new TextCommand(Command.AddText, text));
         }
 
@@ -147,6 +197,7 @@ namespace PdfCraft.API
                                 buffer.Add(lineBuffer);
                             }
 
+                            lineBuffer.CurrentAlignment = currentAlignment;
                             var addedText = textCommand.Data.ToString();
                             var texts = addedText.Split('\n');
 
@@ -201,6 +252,9 @@ namespace PdfCraft.API
 
             double previousLineLength = -1;
 
+            var yPosition = Position.Y;
+            var textLeading = 0;
+
             foreach (var line in buffer)
             {
                 var sbBufferedLine = new StringBuilder();
@@ -209,8 +263,7 @@ namespace PdfCraft.API
                     if (!textLeadingIsSet)
                     {
                         textLeadingIsSet = true;
-
-                        var textLeading = (int)(part.Font.Size * 1.21);
+                        textLeading = (int)(part.Font.Size * 1.21);
                         sbBuffered.Append(string.Format("0 -{0} TD ", textLeading));
                     }
 
@@ -218,14 +271,12 @@ namespace PdfCraft.API
                     {
                         colorIsSet = true;
                         previousColor = part.Color;
-
                         sbBufferedLine.Append(string.Format(part.Color.ToPdfColor() + " rg "));
                     }
 
                     if (part.Font != previousFont)
                     {
                         previousFont = part.Font;
-
                         sbBufferedLine.Append(string.Format("{0} {1} Tf ", part.Font.Font.FontName, part.Font.Size));
                     }
 
@@ -237,56 +288,111 @@ namespace PdfCraft.API
                     else
                         sbBufferedLine.Append(StringConstants.NewLine);
                 }
+                yPosition -= textLeading;
 
                 var currentLineLength = (double)line.Parts.Sum(x => x.TextItem.LengthInPoints) / 1000;
                 switch (line.CurrentAlignment)
                 {
                     case TextAlignment.Left:
-                        sbBuffered.Append("100 Tz ");
+                        sbBuffered = AlignLeft(sbBuffered, Position.X, yPosition, ref previousLineLength);
                         break;
                     case TextAlignment.Right:
-                        {
-                            double xOffset;
-                            if (previousLineLength < 0)
-                                xOffset = _size.Width - (currentLineLength);
-                            else
-                                xOffset = (previousLineLength - currentLineLength);
-
-                            sbBuffered.Append(string.Format("{0:0.###} 0 Td ", xOffset).Replace(',', '.'));
-
-                            previousLineLength = currentLineLength;
-                        }
+                        sbBuffered = AlignRight(sbBuffered, currentLineLength, ref previousLineLength);
                         break;
                     case TextAlignment.Center:
-                        {
-                            double xOffset;
-                            if (previousLineLength < 0)
-                                xOffset = _size.Width - (currentLineLength);
-                            else
-                                xOffset = (previousLineLength - currentLineLength);
-
-                            sbBuffered.Append(string.Format("{0:0.###} 0 Td ", xOffset / 2).Replace(',', '.'));
-
-                            previousLineLength = currentLineLength;
-                        }
+                        sbBuffered = AlignCenter(sbBuffered, currentLineLength, ref previousLineLength);
                         break;
                     case TextAlignment.Justify:
-                        if (currentLineLength > 0)
-                        {
-                            double scaleFactor;
-                            if (line.Linefeed)
-                                scaleFactor = 100;
-                            else
-                                scaleFactor = _size.Width / currentLineLength * 100;
-
-                            sbBuffered.Append(string.Format("{0:0.###} Tz ", scaleFactor).Replace(',', '.'));
-                        }
+                        sbBuffered = AlignJustify(sbBuffered, currentLineLength, line.Linefeed, Position.X, yPosition, ref previousLineLength);
                         break;
                 }
-                sbBuffered.Append(sbBufferedLine);
 
+                sbBuffered.Append(sbBufferedLine);
             }
 
+            return sbBuffered;
+        }
+
+        private IByteContainer AlignJustify(IByteContainer sbBuffered, double currentLineLength, bool isLastLineOfParagraph, int horizontalMargin, int yPosition, ref double previousLineLength)
+        {
+            if (previousLineLength >= 0)
+            {
+                sbBuffered.Append(string.Format("1 0 0 1 {0} {1} Tm ", horizontalMargin, yPosition));
+                previousLineLength = -1;
+            }
+
+            if (currentLineLength > 0)
+            {
+                double scaleFactor;
+                if (isLastLineOfParagraph)
+                    scaleFactor = 100;
+                else
+                    scaleFactor = _size.Width / currentLineLength * 100;
+
+                sbBuffered.Append(string.Format("{0:0.###} Tz ", scaleFactor).Replace(',', '.'));
+            }
+
+            return sbBuffered;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sbBuffered"></param>
+        /// <param name="currentLineLength"></param>
+        /// <param name="previousLineLength">
+        ///     is needed because when we change the start of a line, the starting position of the next line
+        ///     will be relative to this new position
+        /// </param>
+        /// <returns></returns>
+        private IByteContainer AlignCenter(IByteContainer sbBuffered, double currentLineLength, ref double previousLineLength)
+        {
+            double xOffset;
+            if (previousLineLength < 0)
+                xOffset = (_size.Width - currentLineLength) / 2;
+            else
+                xOffset = (previousLineLength - currentLineLength) / 2;
+
+            sbBuffered.Append(string.Format("{0:0.###} 0 Td ", xOffset).Replace(',', '.'));
+
+            previousLineLength = currentLineLength;
+
+            return sbBuffered;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sbBuffered"></param>
+        /// <param name="currentLineLength"></param>
+        /// <param name="previousLineLength">
+        ///     is needed because when we change the start of a line, the starting position of the next line
+        ///     will be relative to this new position
+        /// </param>
+        /// <returns></returns>
+        private IByteContainer AlignRight(IByteContainer sbBuffered, double currentLineLength, ref double previousLineLength)
+        {
+            double xOffset;
+            if (previousLineLength < 0)
+                xOffset = _size.Width - (currentLineLength);
+            else
+                xOffset = (previousLineLength - currentLineLength);
+
+            sbBuffered.Append(string.Format("{0:0.###} 0 Td ", xOffset).Replace(',', '.'));
+
+            previousLineLength = currentLineLength;
+            return sbBuffered;
+        }
+
+        private static IByteContainer AlignLeft(IByteContainer sbBuffered, int horizontalMargin, int yPosition, ref double previousLineLength)
+        {
+            if (previousLineLength >= 0)
+            {
+                sbBuffered.Append(string.Format("1 0 0 1 {0} {1} Tm ", horizontalMargin, yPosition));
+                previousLineLength = -1;
+            }
+
+            sbBuffered.Append("100 Tz ");
             return sbBuffered;
         }
     }

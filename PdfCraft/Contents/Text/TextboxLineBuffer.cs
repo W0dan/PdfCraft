@@ -8,12 +8,11 @@ namespace PdfCraft.Contents.Text
     /// </summary>
     internal class TextboxLineBuffer
     {
-        private readonly TextAlignment _currentAlignment;
         private readonly List<TextboxLinePart> _parts = new List<TextboxLinePart>();
 
         public TextboxLineBuffer(TextAlignment currentAlignment)
         {
-            _currentAlignment = currentAlignment;
+            CurrentAlignment = currentAlignment;
         }
 
         public void AddPart(TextboxLinePart part)
@@ -23,10 +22,7 @@ namespace PdfCraft.Contents.Text
 
         public List<TextboxLinePart> Parts { get { return _parts; } }
 
-        public TextAlignment CurrentAlignment
-        {
-            get { return _currentAlignment; }
-        }
+        public TextAlignment CurrentAlignment { get; set; }
 
         public bool Linefeed { get; set; }
     }

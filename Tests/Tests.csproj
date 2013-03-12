@@ -47,6 +47,7 @@
     <Compile Include="BaseTest.cs" />
     <Compile Include="Concerning_Fonts\Given_a_FontObject\When_it_is_created_with_valid_info_1.cs" />
     <Compile Include="Concerning_Fonts\Given_a_FontObject\When_it_is_created_with_valid_info.cs" />
+    <Compile Include="Concerning_the_API\Given_a_document\When_Bold_and_Italic_are_used_with_Courier.cs" />
     <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_a_realistic_amount_of_text_is_added_in_font_Helvetica_center_aligned.cs" />
     <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_a_realistic_amount_of_text_is_added_in_font_Courier_justified.cs" />
     <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_a_realistic_amount_of_text_is_added_in_font_Helvetica_justified.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_colored_text_is_added.cs" />
     <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_colored_text_wrapped_is_added.cs" />
     <Compile Include="Concerning_the_API\Given_a_document\When_a_Page_with_text_is_added.cs" />
+    <Compile Include="Concerning_the_API\Given_a_document\When_Bold_and_Italic_are_used_with_Helvetica.cs" />
     <Compile Include="Concerning_the_API\Given_a_document\When_CreateTextBox_is_called.cs" />
     <Compile Include="Concerning_the_API\Given_a_GraphicsCanvas\When_DrawPoligon_is_called.cs" />
     <Compile Include="Concerning_the_API\Given_a_GraphicsCanvas\When_DrawImage_is_called_with_a_filename.cs" />

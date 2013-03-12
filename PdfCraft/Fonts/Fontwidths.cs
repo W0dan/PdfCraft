@@ -19,18 +19,24 @@ namespace PdfCraft.Fonts
 
             _fontWidths = new ResourceManager("PdfCraft.Fonts.fontwidths", typeof(Document).Assembly);
 
+            var isBold = _font.Name.Contains("Bold");
+
             //todo: fontwidths for all type 1 fonts in this manner
-            if (_font.Name == "Helvetica")
+            if (_font.Name.StartsWith("Helvetica"))
             {
                 for (var i = 0; i < 256; i++)
                 {
-                    var name = _font.Name + "-" + i.ToString("000");
+                    var name = "Helvetica" + "-" + i.ToString("000");
                     var dictWidth = _fontWidths.GetString(name);
                     var width = string.IsNullOrEmpty(dictWidth) ? 0 : int.Parse(dictWidth);
 
+                    //if (isBold)
+                    //    width = (int)(width * 1.1);
+
                     _widths[i] = width;
                 }
-            } else if (_font.Name == "Courier")
+            }
+            else if (_font.Name.StartsWith("Courier"))
             {
                 for (var i = 0; i < 256; i++)
                 {

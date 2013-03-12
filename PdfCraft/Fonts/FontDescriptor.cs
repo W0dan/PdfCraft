@@ -4,6 +4,13 @@ namespace PdfCraft.Fonts
 {
     internal class FontDescriptor : BasePdfObject
     {
+        private const int FixedPitch = 1;
+        private const int Serif = 2;
+        private const int Symbolic = 4;
+        private const int Script = 8;
+        private const int Nonsymbolic = 32;
+        private const int Italic = 64;
+
         private readonly FontObject _font;
         private readonly int _flags;
 
@@ -12,10 +19,33 @@ namespace PdfCraft.Fonts
         {
             _font = font;
 
-            if (font.Name == "Helvetica")
-                _flags = 32;
-            else if (font.Name == "Courier")
-                _flags = 35;
+            switch (font.Name)
+            {
+                case "Helvetica":
+                    _flags = Nonsymbolic;
+                    break;
+                case "Helvetica-Bold":
+                    _flags = Nonsymbolic;
+                    break;
+                case "Helvetica-Oblique":
+                    _flags = Nonsymbolic + Italic;
+                    break;
+                case "Helvetica-BoldOblique":
+                    _flags = Nonsymbolic + Italic;
+                    break;
+                case "Courier":
+                    _flags = FixedPitch + Serif + Nonsymbolic;
+                    break;
+                case "Courier-Bold":
+                    _flags = FixedPitch + Serif + Nonsymbolic;
+                    break;
+                case "Courier-Oblique":
+                    _flags = FixedPitch + Serif + Nonsymbolic + Italic;
+                    break;
+                case "Courier-BoldOblique":
+                    _flags = FixedPitch + Serif + Nonsymbolic + Italic;
+                    break;
+            }
         }
 
         public override IByteContainer Content

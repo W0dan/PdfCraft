@@ -21,10 +21,10 @@ namespace PdfCraft.Fonts
             if (!_fonts.ContainsKey(hash))
             {
                 font = FontFactory.CreateFont(getNextObjectNumber(), _nextFontNumber++, name);
-                var fontWidths = new Fontwidths(getNextObjectNumber(), font);
-                font.FontWidths = fontWidths;
                 var fontDescriptor = new FontDescriptor(getNextObjectNumber(), font);
                 font.FontDescriptor = fontDescriptor;
+                var fontWidths = new Fontwidths(getNextObjectNumber(), font);
+                font.FontWidths = fontWidths;
 
                 _fonts.Add(hash, font);
             }

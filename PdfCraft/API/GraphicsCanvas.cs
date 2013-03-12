@@ -50,6 +50,11 @@ namespace PdfCraft.API
             _graphicsCommands.Add(new GraphicsCommand(Command.DrawBox, boxDefinition));
         }
 
+        public void DrawBox(Rectangle box)
+        {
+            DrawBox(new Point(box.Left, box.Top), new Size(box.Width, box.Height));
+        }
+
         public void DrawCircle(Point center, int radius)
         {
             var circleDefinition = new CircleDefinition(center.GetPointInMillimeters(), radius.ToMillimeters());
@@ -131,7 +136,7 @@ namespace PdfCraft.API
                         case Command.DrawBox:
                             var boxDefinition = (BoxDefinition)command.Data;
                             var topLeftY = Size.Height - boxDefinition.TopLeft.Y - boxDefinition.Size.Height;
-                            sb.Append(string.Format("{0} {1} {2} {3} re S ", boxDefinition.TopLeft.X, topLeftY, boxDefinition.Size.Width, boxDefinition.Size.Height));
+                            sb.Append(string.Format("{0} {1} {2} {3} re b ", boxDefinition.TopLeft.X, topLeftY, boxDefinition.Size.Width, boxDefinition.Size.Height));
                             break;
                         case Command.DrawPoligon:
                             {
