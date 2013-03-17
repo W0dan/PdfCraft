@@ -30,8 +30,8 @@ namespace PdfCraft.Fonts
                     var dictWidth = _fontWidths.GetString(name);
                     var width = string.IsNullOrEmpty(dictWidth) ? 0 : int.Parse(dictWidth);
 
-                    //if (isBold)
-                    //    width = (int)(width * 1.1);
+                    if (isBold)
+                        width = (int)(width * 1.1);
 
                     _widths[i] = width;
                 }

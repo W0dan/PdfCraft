@@ -278,6 +278,9 @@ namespace PdfCraft.API
                     {
                         previousFont = part.Font;
                         sbBufferedLine.Append(string.Format("{0} {1} Tf ", part.Font.Font.FontName, part.Font.Size));
+
+                        textLeading = (int)(part.Font.Size * 1.21);
+                        sbBuffered.Append(string.Format("{0} TL ", textLeading));
                     }
 
                     if (part.TextItem.Text.Length > 0)
