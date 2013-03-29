@@ -60,7 +60,11 @@ namespace PdfCraft.Containers
             var numberOfIncrements = addedLength / IncrementSize;
 
             var tmp = _data;
-            _allocatedSize = tmp.Length + ((numberOfIncrements + 1) * IncrementSize);
+            var neededSize = tmp.Length + ((numberOfIncrements + 1) * IncrementSize);
+            if (neededSize > _allocatedSize*2)
+                _allocatedSize = neededSize;
+            else
+                _allocatedSize *= 2;
 
             _data = new byte[_allocatedSize];
             for (var i = 0; i < _currentSize; i++)
