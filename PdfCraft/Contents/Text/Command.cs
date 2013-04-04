@@ -5,6 +5,8 @@ namespace PdfCraft.Contents.Text
         SetFont,
         AddText,
         SetColor,
-        SetAlignment
+        SetAlignment,
+        SetSuperscriptOn,
+        SetSuperscriptOff
     }
 }

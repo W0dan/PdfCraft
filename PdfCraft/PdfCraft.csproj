@@ -49,6 +49,7 @@
     <Compile Include="Contents\Text\BreakPoint.cs" />
     <Compile Include="Contents\Text\TextboxLineBuffer.cs" />
     <Compile Include="Contents\Text\TextboxLinePart.cs" />
+    <Compile Include="Contents\Text\TextStyle.cs" />
     <Compile Include="Extensions\IntExtensions.cs" />
     <Compile Include="Fonts\FontDefinition.cs" />
     <Compile Include="Fonts\FontDescriptor.cs" />

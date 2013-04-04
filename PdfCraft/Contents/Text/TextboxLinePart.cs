@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-using PdfCraft.Fonts;
-
-namespace PdfCraft.Contents.Text
+﻿namespace PdfCraft.Contents.Text
 {
     /// <summary>
     /// defines a part of a line of text, with layout
@@ -9,14 +6,12 @@ namespace PdfCraft.Contents.Text
     internal class TextboxLinePart
     {
         private readonly BreakPoint _textItem;
-        private readonly FontDefinition _font;
-        private readonly Color _color;
+        private readonly TextStyle _style;
 
-        public TextboxLinePart(BreakPoint textItem, FontDefinition font, Color color, bool endOfLine)
+        public TextboxLinePart(BreakPoint textItem, TextStyle style, bool endOfLine)
         {
             _textItem = textItem;
-            _font = font;
-            _color = color;
+            _style = style;
             EndOfLine = endOfLine;
         }
 
@@ -27,14 +22,9 @@ namespace PdfCraft.Contents.Text
             get { return _textItem; }
         }
 
-        public FontDefinition Font
+        public TextStyle Style
         {
-            get { return _font; }
-        }
-
-        public Color Color
-        {
-            get { return _color; }
+            get { return _style; }
         }
     }
 }
