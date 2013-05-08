@@ -4,8 +4,8 @@ PdfCraft
 A library to create PDF's
 
 The library is meant to provide a means to generate PDF-files without file-access and as fast as possible, while
-keeping the API developer-friendly. Given these constraints, I tried to put as many features in it. However, it
-is a work in progress and not finished by far.
+keeping the API developer-friendly. Given these constraints, I tried to put as many features in it as possible.
+However, it is a work in progress and not finished by far.
 
 For examples on how to use this library, I'd like to refer to the (unit-)tests, especially those under 'API'.
 
