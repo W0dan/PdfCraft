@@ -6,6 +6,7 @@ using PdfCraft.Fonts;
 
 namespace Tests.Concerning_the_API.Given_a_document
 {
+    [TestFixture]
     public class When_a_Page_with_colored_text_wrapped_is_added : BaseTest
     {
         private Document _sut;
@@ -67,15 +68,10 @@ namespace Tests.Concerning_the_API.Given_a_document
         [Test]
         public void It_should_render_a_PDF()
         {
-            var test = new TestExecutor(this);
+            var generatedBytes = _sut.Generate();
 
-            test.Assert(() =>
-            {
-                var generatedBytes = _sut.Generate();
-
-                var content = new ByteArrayByteContainer(generatedBytes);
-                Assert.IsNotNull(content);
-            });
+            var content = new ByteArrayByteContainer(generatedBytes);
+            Assert.IsNotNull(content);
         }
     }
 }

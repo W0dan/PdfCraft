@@ -1,4 +1,5 @@
-﻿using PdfCraft.Containers;
+﻿using NUnit.Framework;
+using PdfCraft.Containers;
 
 namespace Tests.Concerning_the_ByteArrayByteContainer.Given_a_non_empty_ByteArrayByteContainer
 {
@@ -6,6 +7,12 @@ namespace Tests.Concerning_the_ByteArrayByteContainer.Given_a_non_empty_ByteArra
     {
         protected ByteArrayByteContainer Sut;
         protected string OriginalContent;
+
+        [TestFixtureSetUp]
+        public override void Setup()
+        {
+            base.Setup();
+        }
 
         public override void Arrange()
         {

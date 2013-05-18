@@ -5,6 +5,7 @@ using PdfCraft.Containers;
 
 namespace Tests.Concerning_the_API.Given_a_GraphicsCanvas
 {
+    [TestFixture]
     public class When_DrawPoligon_is_called : BaseTest
     {
         private Document _document;
@@ -25,25 +26,20 @@ namespace Tests.Concerning_the_API.Given_a_GraphicsCanvas
 
         public override void Act()
         {
-            _sut.DrawPoligon(new Point(50, 50), new Point(75,100), new Point(100,75));
+            _sut.DrawPoligon(new Point(50, 50), new Point(75, 100), new Point(100, 75));
 
-            _sut.DrawClosedPoligon(new Point(50, 150), new Point(75,200), new Point(100,175));
+            _sut.DrawClosedPoligon(new Point(50, 150), new Point(75, 200), new Point(100, 175));
         }
 
         [Test]
         public void It_should_draw_a_circle()
         {
-            var test = new TestExecutor(this);
+            var generatedBytes = _document.Generate();
 
-            test.Assert(() =>
-            {
-                var generatedBytes = _document.Generate();
+            //DumpToRandomFile(generatedBytes, "pdf");
 
-                //DumpToRandomFile(generatedBytes, "pdf");
-
-                var content = new ByteArrayByteContainer(generatedBytes);
-                Assert.IsNotNull(content);
-            });
+            var content = new ByteArrayByteContainer(generatedBytes);
+            Assert.IsNotNull(content);
         }
     }
 }

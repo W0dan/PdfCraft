@@ -4,6 +4,7 @@ using PdfCraft;
 
 namespace Tests.Concerning_the_PageObject.Given_a_PageObject
 {
+    [TestFixture]
     public class When_it_is_created : BaseTest
     {
         private int _objectNumber;
@@ -29,19 +30,15 @@ namespace Tests.Concerning_the_PageObject.Given_a_PageObject
         [Test]
         public void It_should_contain_the_ObjectNumber()
         {
-            var test = new TestExecutor(this);
-
-            test.Assert(() => Assert.AreEqual(_objectNumber, _sut.Number));
+            Assert.AreEqual(_objectNumber, _sut.Number);
         }
 
         [Test]
         public void It_should_be_constructed_with_its_size_in_mm()
         {
-            var test = new TestExecutor(this);
-
             var expectedValue = string.Format("/MediaBox [0 0 {0} {1}]", (int)(_width * 2.54), (int)(_height * 2.54));
 
-            test.Assert(() => Assert.IsTrue(_sut.Content.ToString().Contains(expectedValue)));
+            Assert.IsTrue(_sut.Content.ToString().Contains(expectedValue));
         }
     }
 }

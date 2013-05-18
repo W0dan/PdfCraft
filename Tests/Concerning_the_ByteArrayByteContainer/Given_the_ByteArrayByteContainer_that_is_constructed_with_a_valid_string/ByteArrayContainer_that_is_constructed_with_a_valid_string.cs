@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using PdfCraft.Containers;
 
 namespace Tests.Concerning_the_ByteArrayByteContainer.Given_the_ByteArrayByteContainer_that_is_constructed_with_a_valid_string
@@ -6,6 +7,12 @@ namespace Tests.Concerning_the_ByteArrayByteContainer.Given_the_ByteArrayByteCon
     {
         protected ByteArrayByteContainer Sut;
         protected string ValidString;
+
+        [TestFixtureSetUp]
+        public override void Setup()
+        {
+            base.Setup();
+        }
 
         public override void Arrange()
         {

@@ -6,6 +6,7 @@ using PdfCraft.Contents.Graphics;
 
 namespace Tests.Concerning_the_API.Given_a_GraphicsCanvas
 {
+    [TestFixture]
     public class When_DrawImage_is_called_with_a_stream : BaseTest
     {
         private Document _document;
@@ -38,17 +39,12 @@ namespace Tests.Concerning_the_API.Given_a_GraphicsCanvas
         [Test]
         public void It_should_draw_an_image()
         {
-            var test = new TestExecutor(this);
+            var generatedBytes = _document.Generate();
 
-            test.Assert(() =>
-            {
-                var generatedBytes = _document.Generate();
+            //DumpToRandomFile(generatedBytes, "pdf");
 
-                //DumpToRandomFile(generatedBytes, "pdf");
-
-                var content = new ByteArrayByteContainer(generatedBytes);
-                Assert.IsNotNull(content);
-            });
+            var content = new ByteArrayByteContainer(generatedBytes);
+            Assert.IsNotNull(content);
         }
     }
 }

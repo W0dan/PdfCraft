@@ -98,7 +98,6 @@
     <Compile Include="Concerning_wordwrapping\Given_a_document\When_a_line_of_text_is_added_with_3_styles_before_wrapping_much_text.cs" />
     <Compile Include="Concerning_wordwrapping\Given_a_document\When_a_line_of_text_is_added_with_3_styles_before_wrapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestExecutor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

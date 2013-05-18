@@ -4,6 +4,7 @@ using PdfCraft;
 
 namespace Tests.Concerning_the_PageObject.Given_a_PageObject
 {
+    [TestFixture]
     public class When_a_ContentsObject_is_added : BaseTest
     {
         private int _pageObjectNumber;
@@ -29,11 +30,9 @@ namespace Tests.Concerning_the_PageObject.Given_a_PageObject
         [Test]
         public void It_should_render_a_PdfPageObject_with_the_objectnumber_of_the_ContentsObject()
         {
-            var test = new TestExecutor(this);
-
             var expectedValue = string.Format("/Contents {0} 0 R", _contentsObjectNumber);
 
-            test.Assert(() => Assert.IsTrue(_sut.Content.ToString().Contains(expectedValue)));
+            Assert.IsTrue(_sut.Content.ToString().Contains(expectedValue));
         }
     }
 }

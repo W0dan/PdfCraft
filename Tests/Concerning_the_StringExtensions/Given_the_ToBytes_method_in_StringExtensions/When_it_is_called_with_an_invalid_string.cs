@@ -16,16 +16,13 @@ namespace Tests.Concerning_the_StringExtensions.Given_the_ToBytes_method_in_Stri
 
         public override void Act()
         {
-            _text.ToBytes();
         }
 
         [Test]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void It_should_throw_an_ArgumentException()
         {
-            var test = new TestExecutor(this);
-
-            test.Assert(() => Assert.Fail("No exception has been thrown"));
+            _text.ToBytes();
         }
     }
 }

@@ -4,6 +4,7 @@ using PdfCraft;
 
 namespace Tests.Concerning_the_PagesObject.Given_a_PagesObject
 {
+    [TestFixture]
     public class When_3_PageObjects_are_added : BaseTest
     {
         private int _page1ObjectNumber;
@@ -39,13 +40,11 @@ namespace Tests.Concerning_the_PagesObject.Given_a_PagesObject
         [Test]
         public void It_should_render_a_PdfPagesObject_with_the_objectnumber_of_the_PageObject()
         {
-            var test = new TestExecutor(this);
-
             var expectedValue = string.Format("{0} 0 obj\r\n" +
                                 "<< /Type /Pages\r\n/Kids [{1} 0 R {2} 0 R {3} 0 R ]\r\n/Count 3\r\n>>\r\n" +
                                 "endobj\r\n", _pagesObjectNumber, _page1ObjectNumber, _page2ObjectNumber, _page3ObjectNumber);
 
-            test.Assert(() => Assert.AreEqual(expectedValue, _sut.Content.ToString()));
+            Assert.AreEqual(expectedValue, _sut.Content.ToString());
         }
     }
 }

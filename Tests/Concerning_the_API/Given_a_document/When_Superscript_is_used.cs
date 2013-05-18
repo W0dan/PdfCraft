@@ -6,6 +6,7 @@ using PdfCraft.Fonts;
 
 namespace Tests.Concerning_the_API.Given_a_document
 {
+    [TestFixture]
     public class When_Superscript_is_used : BaseTest
     {
         private TextBox _sut;
@@ -35,17 +36,12 @@ namespace Tests.Concerning_the_API.Given_a_document
         [Test]
         public void It_should_render_a_pdf()
         {
-            var test = new TestExecutor(this);
+            var generatedBytes = _document.Generate();
 
-            test.Assert(() =>
-            {
-                var generatedBytes = _document.Generate();
+            //DumpToRandomFile(generatedBytes, "pdf");
 
-                //DumpToRandomFile(generatedBytes, "pdf");
-
-                var content = new ByteArrayByteContainer(generatedBytes);
-                Assert.IsNotNull(content);
-            });
+            var content = new ByteArrayByteContainer(generatedBytes);
+            Assert.IsNotNull(content);
         }
     }
 }

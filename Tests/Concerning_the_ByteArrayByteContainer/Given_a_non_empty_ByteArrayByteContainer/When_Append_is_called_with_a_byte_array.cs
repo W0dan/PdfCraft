@@ -2,6 +2,7 @@
 
 namespace Tests.Concerning_the_ByteArrayByteContainer.Given_a_non_empty_ByteArrayByteContainer
 {
+    [TestFixture]
     public class When_Append_is_called_with_a_byte_array : Non_empty_ByteArrayByteContainer
     {
         protected byte[] _appendedContent;
@@ -15,19 +16,14 @@ namespace Tests.Concerning_the_ByteArrayByteContainer.Given_a_non_empty_ByteArra
         [Test]
         public void It_should_contain_the_original_bytes_before_the_bytes_of_the_appended_string()
         {
-            var test = new TestExecutor(this);
-
-            test.Assert(() =>
-                {
-                    var content = Sut.GetBytes();
-                    for (var i = 0; i < content.Length; i++)
-                    {
-                        if (i < OriginalContent.Length)
-                            Assert.AreEqual(OriginalContent[i], (char) content[i]);
-                        else
-                            Assert.AreEqual(_appendedContent[i - OriginalContent.Length], content[i]);
-                    }
-                });
+            var content = Sut.GetBytes();
+            for (var i = 0; i < content.Length; i++)
+            {
+                if (i < OriginalContent.Length)
+                    Assert.AreEqual(OriginalContent[i], (char)content[i]);
+                else
+                    Assert.AreEqual(_appendedContent[i - OriginalContent.Length], content[i]);
+            }
         }
     }
 }

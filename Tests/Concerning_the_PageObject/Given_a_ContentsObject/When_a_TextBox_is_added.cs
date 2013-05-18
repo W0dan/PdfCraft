@@ -6,6 +6,7 @@ using PdfCraft.Fonts;
 
 namespace Tests.Concerning_the_PageObject.Given_a_ContentsObject
 {
+    [TestFixture]
     public class When_a_TextBox_is_added : BaseTest
     {
         private ContentsObject _sut;
@@ -32,9 +33,7 @@ namespace Tests.Concerning_the_PageObject.Given_a_ContentsObject
         [Test]
         public void It_should_add_the__fonts_used__to_the_document()
         {
-            var test = new TestExecutor(this);
-
-            test.Assert(() => Assert.IsTrue(_document.Fonts.ToDictionary().ContainsKey(_fontProperties.GetHashCode())));
+            Assert.IsTrue(_document.Fonts.ToDictionary().ContainsKey(_fontProperties.GetHashCode()));
         }
     }
 }

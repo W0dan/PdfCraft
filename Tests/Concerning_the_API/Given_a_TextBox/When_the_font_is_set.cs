@@ -5,6 +5,7 @@ using PdfCraft.Fonts;
 
 namespace Tests.Concerning_the_API.Given_a_TextBox
 {
+    [TestFixture]
     public class When_the_font_is_set : BaseTest
     {
         private TextBox _sut;
@@ -30,15 +31,10 @@ namespace Tests.Concerning_the_API.Given_a_TextBox
         [Test]
         public void It_should_contain_the_pdf_code_to_set_the_font()
         {
-            var test = new TestExecutor(this);
+            var font = _document.Fonts.ToDictionary()[_properties.GetHashCode()];
+            var expectedValue = string.Format("{0} {1} Tf", font.FontName, _fontsize);
 
-            test.Assert(() =>
-                {
-                    var font = _document.Fonts.ToDictionary()[_properties.GetHashCode()];
-                    var expectedValue = string.Format("{0} {1} Tf", font.FontName, _fontsize);
-
-                    Assert.IsTrue(_sut.Content.ToString().Contains(expectedValue), expectedValue + " not found in TextBox");
-                });
+            Assert.IsTrue(_sut.Content.ToString().Contains(expectedValue), expectedValue + " not found in TextBox");
         }
     }
 }

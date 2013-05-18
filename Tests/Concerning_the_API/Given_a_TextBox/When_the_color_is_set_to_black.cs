@@ -5,6 +5,7 @@ using PdfCraft.Fonts;
 
 namespace Tests.Concerning_the_API.Given_a_TextBox
 {
+    [TestFixture]
     public class When_the_color_is_set_to_black : BaseTest
     {
         private TextBox _sut;
@@ -28,14 +29,9 @@ namespace Tests.Concerning_the_API.Given_a_TextBox
         [Test]
         public void It_should_contain_the_pdf_code_to_set_the_color()
         {
-            var test = new TestExecutor(this);
+            var expectedValue = string.Format("{0} {1} {2} rg", _color.R, _color.G, _color.B);
 
-            test.Assert(() =>
-            {
-                var expectedValue = string.Format("{0} {1} {2} rg", _color.R, _color.G, _color.B);
-
-                Assert.IsTrue(_sut.Content.ToString().Contains(expectedValue), expectedValue + " not found in TextBox");
-            });
+            Assert.IsTrue(_sut.Content.ToString().Contains(expectedValue), expectedValue + " not found in TextBox");
         }
     }
 }

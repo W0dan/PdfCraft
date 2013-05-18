@@ -3,6 +3,7 @@ using PdfCraft;
 
 namespace Tests.Concerning_the_CatalogObject.Given_a_CatalogObject
 {
+    [TestFixture]
     public class When_it_is_created : BaseTest
     {
         private int _objectNumber;
@@ -21,9 +22,7 @@ namespace Tests.Concerning_the_CatalogObject.Given_a_CatalogObject
         [Test]
         public void It_should_contain_the_ObjectNumber()
         {
-            var test = new TestExecutor(this);
-
-            test.Assert(() => Assert.AreEqual(_objectNumber, _sut.Number));
+            Assert.AreEqual(_objectNumber, _sut.Number);
         }
     }
 }

@@ -6,6 +6,7 @@ using PdfCraft.Fonts;
 
 namespace Tests.Concerning_the_API.Given_a_document
 {
+    [TestFixture]
     public class When_Bold_and_Italic_are_used_with_Helvetica : BaseTest
     {
         private Document _document;
@@ -53,17 +54,12 @@ namespace Tests.Concerning_the_API.Given_a_document
         [Test]
         public void It_should_create_the_PDF()
         {
-            var test = new TestExecutor(this);
+            var generatedBytes = _document.Generate();
 
-            test.Assert(() =>
-            {
-                var generatedBytes = _document.Generate();
+            //DumpToRandomFile(generatedBytes, "pdf");
 
-                //DumpToRandomFile(generatedBytes, "pdf");
-
-                var content = new ByteArrayByteContainer(generatedBytes);
-                Assert.IsNotNull(content);
-            });
+            var content = new ByteArrayByteContainer(generatedBytes);
+            Assert.IsNotNull(content);
         }
     }
 }

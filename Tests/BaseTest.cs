@@ -1,18 +1,26 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using NUnit.Framework;
 
 namespace Tests
 {
-    [TestFixture]
     public abstract class BaseTest
     {
         [TestFixtureSetUp]
+        public virtual void Setup()
+        {
+            Arrange();
+            Act();
+        }
+
         public abstract void Arrange();
         public abstract void Act();
 
         [TestFixtureTearDown]
-        public virtual void CleanUp(){}
+        public virtual void CleanUp() { }
 
         protected void DumpToFile(byte[] buffer, string filename)
         {
@@ -37,5 +45,6 @@ namespace Tests
 
             return DumpToRandomFile(buffer, extension);
         }
+
     }
 }

@@ -6,6 +6,7 @@ using PdfCraft.Fonts;
 
 namespace Tests.Concerning_wordwrapping.Given_a_document
 {
+    [TestFixture]
     public class When_a_line_of_text_is_added_with_3_styles_before_wrapping_much_text : BaseTest
     {
         private Document _sut;
@@ -112,17 +113,12 @@ namespace Tests.Concerning_wordwrapping.Given_a_document
         [Test]
         public void It_should_render_correctly()
         {
-            var test = new TestExecutor(this);
+            var generatedBytes = _sut.Generate();
 
-            test.Assert(() =>
-            {
-                var generatedBytes = _sut.Generate();
+            //DumpToRandomFile(generatedBytes, "pdf");
 
-                //DumpToRandomFile(generatedBytes, "pdf");
-
-                var content = new ByteArrayByteContainer(generatedBytes);
-                Assert.IsNotNull(content);
-            });
+            var content = new ByteArrayByteContainer(generatedBytes);
+            Assert.IsNotNull(content);
         }
     }
 }

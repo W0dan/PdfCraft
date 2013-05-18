@@ -90,7 +90,9 @@
     <Compile Include="Contents\Text\TextCommand.cs" />
     <Compile Include="Contents\Text\WordWrapping.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Fonts\TrueType\" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Fonts\fontwidths.resx">
       <SubType>Designer</SubType>

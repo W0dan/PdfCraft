@@ -5,6 +5,7 @@ using PdfCraft.Containers;
 
 namespace Tests.Concerning_the_API.Given_a_GraphicsCanvas
 {
+    [TestFixture]
     public class When_DrawCircle_is_called : BaseTest
     {
         private Document _document;
@@ -31,15 +32,10 @@ namespace Tests.Concerning_the_API.Given_a_GraphicsCanvas
         [Test]
         public void It_should_draw_a_circle()
         {
-            var test = new TestExecutor(this);
+            var generatedBytes = _document.Generate();
 
-            test.Assert(() =>
-            {
-                var generatedBytes = _document.Generate();
-
-                var content = new ByteArrayByteContainer(generatedBytes);
-                Assert.IsNotNull(content);
-            });
+            var content = new ByteArrayByteContainer(generatedBytes);
+            Assert.IsNotNull(content);
         }
     }
 }

@@ -6,6 +6,7 @@ using PdfCraft.Fonts;
 
 namespace Tests.Concerning_the_API.Given_a_document
 {
+    [TestFixture]
     public class When_a_Page_with_a_realistic_amount_of_text_is_added_in_font_Helvetica_justified : BaseTest
     {
         private Document _sut;
@@ -96,17 +97,12 @@ namespace Tests.Concerning_the_API.Given_a_document
         [Test]
         public void It_should_render_a_PDF()
         {
-            var test = new TestExecutor(this);
+            var generatedBytes = _sut.Generate();
 
-            test.Assert(() =>
-                {
-                    var generatedBytes = _sut.Generate();
+            //DumpToRandomFile(generatedBytes, "pdf");
 
-                    //DumpToRandomFile(generatedBytes, "pdf");
-
-                    var content = new ByteArrayByteContainer(generatedBytes);
-                    Assert.IsNotNull(content);
-                });
+            var content = new ByteArrayByteContainer(generatedBytes);
+            Assert.IsNotNull(content);
         }
     }
 }

@@ -5,6 +5,7 @@ using PdfCraft.Fonts;
 
 namespace Tests.Concerning_the_API.Given_a_TextBox
 {
+    [TestFixture]
     public class When_text_is_added : BaseTest
     {
         private TextBox _sut;
@@ -26,9 +27,7 @@ namespace Tests.Concerning_the_API.Given_a_TextBox
         [Test]
         public void It_should_contain_that_text()
         {
-            var test = new TestExecutor(this);
-
-            test.Assert(() => Assert.IsTrue(_sut.Content.ToString().Contains(_addedText), _addedText + " not found in textbox"));
+            Assert.IsTrue(_sut.Content.ToString().Contains(_addedText), _addedText + " not found in textbox");
         }
     }
 }

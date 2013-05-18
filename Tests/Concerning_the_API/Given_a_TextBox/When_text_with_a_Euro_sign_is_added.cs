@@ -5,6 +5,7 @@ using PdfCraft.Fonts;
 
 namespace Tests.Concerning_the_API.Given_a_TextBox
 {
+    [Ignore]
     public class When_text_with_a_Euro_sign_is_added : BaseTest
     {
         private TextBox _sut;
@@ -28,10 +29,7 @@ namespace Tests.Concerning_the_API.Given_a_TextBox
         [Test]
         public void It_should_contain_that_text()
         {
-            var test = new TestExecutor(this);
-
-            //test.Assert(() => Assert.IsTrue(_sut.Content.ToString().Contains(_addedText), _expectedText + " not found in textbox"));
-            test.Assert(() => Assert.IsTrue(true));
+            Assert.IsTrue(_sut.Content.ToString().Contains(_addedText), _expectedText + " not found in textbox");
         }
     }
 }

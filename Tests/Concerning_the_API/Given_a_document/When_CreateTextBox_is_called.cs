@@ -4,6 +4,7 @@ using PdfCraft.API;
 
 namespace Tests.Concerning_the_API.Given_a_document
 {
+    [TestFixture]
     public class When_CreateTextBox_is_called : BaseTest
     {
         private Document _sut;
@@ -22,17 +23,13 @@ namespace Tests.Concerning_the_API.Given_a_document
         [Test]
         public void It_should_create_an_instance_of_TextBox()
         {
-            var test = new TestExecutor(this);
-
-            test.Assert(() => Assert.IsNotNull(_result));
+            Assert.IsNotNull(_result);
         }
 
         [Test]
         public void It_should_bind_itself_to_the_TextBox()
         {
-            var test = new TestExecutor(this);
-
-            test.Assert(() => Assert.AreSame(_sut, _result.Owner));
+            Assert.AreSame(_sut, _result.Owner);
         }
     }
 }
