@@ -59,10 +59,10 @@ namespace PdfCraft.API
             return _xObjects.AddXObject(imageType, sourceStream, GetNextObjectNumber);
         }
 
-        public Page AddPage()
+        public Page AddPage(int width = 210, int height = 297)
         {
             var contents = new ContentsObject(GetNextObjectNumber());
-            var page = new PageObject(GetNextObjectNumber(), new Size(210, 297));
+            var page = new PageObject(GetNextObjectNumber(), new Size(width, height));
 
             page.AddContents(contents);
             _pages.AddPage(page);
