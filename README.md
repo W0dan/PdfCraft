@@ -13,9 +13,8 @@ The unit tests can drop their output in a file by uncommenting or adding a call 
 Most tests don't write to the filesystem. I tend to dump the output only for the test I'm currently working on.
 
 Currently on the TODO-list:
-- Improve the support for the Base 14 Type 1 fonts,
 - improve support for images,
-- add support for TrueType fonts.
+- improve support for TrueType fonts (a TrueType font that works is included as embedded resource in the tests).
 
 
 
