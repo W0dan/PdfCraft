@@ -1,49 +1,43 @@
-﻿using PdfCraft.Constants;
+﻿using System.Collections.Generic;
+using PdfCraft.Constants;
 using PdfCraft.Containers;
 
 namespace PdfCraft
 {
     public abstract class BasePdfObject
     {
-        private readonly int _objectNumber;
-        private IByteContainer _objectContent;
+        private IByteContainer objectContent;
+        public readonly List<BasePdfObject> ChildObjects = new List<BasePdfObject>();
+        private IByteContainer cachedContent = null;
 
         protected BasePdfObject(int objectNumber)
         {
-            _objectNumber = objectNumber;
-            _objectContent = null;
+            this.Number = objectNumber;
+            objectContent = null;
         }
 
         protected void SetContent(IByteContainer newContent)
         {
-            _objectContent = newContent;
+            objectContent = newContent;
         }
 
-        public int Number
-        {
-            get { return _objectNumber; }
-        }
+        public int Number { get; }
 
         public virtual IByteContainer Content
         {
             get
             {
-                var content = ByteContainerFactory
-                    .CreateByteContainer(_objectNumber + " 0 obj" + StringConstants.NewLine);
-                content.Append(_objectContent);
-                content.Append(StringConstants.NewLine + "endobj" + StringConstants.NewLine);
-
-                return content;
+                if (cachedContent == null)
+                {
+                    cachedContent = ByteContainerFactory
+                        .CreateByteContainer($"{Number} 0 obj{StringConstants.NewLine}");
+                    cachedContent.Append(objectContent);
+                    cachedContent.Append($"{StringConstants.NewLine}endobj{StringConstants.NewLine}");
+                }
+                return cachedContent;
             }
         }
 
-        public int Length
-        {
-            get
-            {
-                return Content.Length;
-            }
-        }
-
+        public int Length => Content.Length;
     }
 }

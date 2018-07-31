@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,40 +15,45 @@ namespace PdfCraft.API
 {
     public class GraphicsCanvas : ContentsPart
     {
-        private readonly Document _owner;
-        private readonly List<GraphicsCommand> _graphicsCommands = new List<GraphicsCommand>();
-        private readonly HashSet<string> _xObjectReferences = new HashSet<string>();
+        private readonly Document owner;
+        private readonly List<GraphicsCommand> graphicsCommands = new List<GraphicsCommand>();
+        private readonly HashSet<string> xObjectReferences = new HashSet<string>();
 
 
         public GraphicsCanvas(Document owner)
         {
-            _owner = owner;
+            this.owner = owner;
         }
 
-        internal override bool IsText { get { return false; } }
+        internal override bool IsText => false;
 
         internal Size Size { get; set; }
 
+        public void SetLineWidth(double width)
+        {
+            graphicsCommands.Add(new GraphicsCommand(Command.SetLineWidth, width));
+        }
+
         public void SetFillColor(Color color)
         {
-            _graphicsCommands.Add(new GraphicsCommand(Command.SetFillColor, color));
+            graphicsCommands.Add(new GraphicsCommand(Command.SetFillColor, color));
         }
 
         public void SetStrokeColor(Color color)
         {
-            _graphicsCommands.Add(new GraphicsCommand(Command.SetStrokeColor, color));
+            graphicsCommands.Add(new GraphicsCommand(Command.SetStrokeColor, color));
         }
 
         public void DrawLine(Point start, Point end)
         {
             var lineDefinition = new LineDefinition(start.GetPointInMillimeters(), end.GetPointInMillimeters());
-            _graphicsCommands.Add(new GraphicsCommand(Command.DrawLine, lineDefinition));
+            graphicsCommands.Add(new GraphicsCommand(Command.DrawLine, lineDefinition));
         }
 
         public void DrawBox(Point topLeft, Size size)
         {
             var boxDefinition = new BoxDefinition(topLeft.GetPointInMillimeters(), size.GetSizeInMillimeters());
-            _graphicsCommands.Add(new GraphicsCommand(Command.DrawBox, boxDefinition));
+            graphicsCommands.Add(new GraphicsCommand(Command.DrawBox, boxDefinition));
         }
 
         public void DrawBox(Rectangle box)
@@ -58,7 +64,7 @@ namespace PdfCraft.API
         public void DrawCircle(Point center, int radius)
         {
             var circleDefinition = new CircleDefinition(center.GetPointInMillimeters(), radius.ToMillimeters());
-            _graphicsCommands.Add(new GraphicsCommand(Command.DrawCircle, circleDefinition));
+            graphicsCommands.Add(new GraphicsCommand(Command.DrawCircle, circleDefinition));
         }
 
         public void DrawClosedPoligon(params Point[] points)
@@ -74,48 +80,51 @@ namespace PdfCraft.API
         private void DrawPoligon(Point[] points, bool isClosed)
         {
             if (points.Length < 2)
-                throw new ArgumentException("a poligon can only be created from at least 2 points", "points");
+                throw new ArgumentException("a poligon can only be created from at least 2 points", nameof(points));
 
             var pointsInMm = new Point[points.Length];
             for (var i = 0; i < points.Length; i++)
                 pointsInMm[i] = points[i].GetPointInMillimeters();
 
             var poligonDefinition = new PoligonDefinition(points, isClosed);
-            _graphicsCommands.Add(new GraphicsCommand(Command.DrawPoligon, poligonDefinition));
+            graphicsCommands.Add(new GraphicsCommand(Command.DrawPoligon, poligonDefinition));
         }
 
         public void DrawImage(Point topLeft, Size size, ImageType imageType, string sourceFile)
         {
-            var xObject = _owner.AddXObject(imageType, sourceFile);
+            var xObject = owner.AddXObject(imageType, sourceFile);
             var imageDefinition = new ImageDefinition(topLeft.GetPointInMillimeters(), size.GetSizeInMillimeters(), imageType, sourceFile, xObject);
 
-            _graphicsCommands.Add(new GraphicsCommand(Command.DrawImage, imageDefinition));
+            graphicsCommands.Add(new GraphicsCommand(Command.DrawImage, imageDefinition));
         }
 
         public void DrawImage(Point topLeft, Size size, ImageType imageType, Stream sourceStream)
         {
-            var xObject = _owner.AddXObject(imageType, sourceStream);
+            var xObject = owner.AddXObject(imageType, sourceStream);
             var imageDefinition = new ImageDefinition(topLeft.GetPointInMillimeters(), size.GetSizeInMillimeters(), imageType, sourceStream, xObject);
 
-            _graphicsCommands.Add(new GraphicsCommand(Command.DrawImage, imageDefinition));
+            graphicsCommands.Add(new GraphicsCommand(Command.DrawImage, imageDefinition));
         }
 
         public IEnumerable<string> GetXObjectnames()
         {
-            return _xObjectReferences;
+            return xObjectReferences;
         }
 
         internal override IByteContainer Content
         {
             get
             {
-                var sb = ByteContainerFactory.CreateByteContainer("0.5 w" + StringConstants.NewLine);
-                //var sb = new StringBuilder("0.5 w" + StringConstants.NewLine);
+                var sb = ByteContainerFactory.CreateByteContainer($"0.5 w{StringConstants.NewLine}");
 
-                foreach (var command in _graphicsCommands)
+                foreach (var command in graphicsCommands)
                 {
                     switch (command.Command)
                     {
+                        case Command.SetLineWidth:
+                            var lineWidth = (double) command.Data;
+                            sb.Append(lineWidth.ToString("0.0", CultureInfo.InvariantCulture) + $" w{StringConstants.NewLine}");
+                            break;
                         case Command.SetFillColor:
                             var fillColor = (Color)command.Data;
                             sb.Append(fillColor.ToPdfColor() + " rg ");
@@ -181,7 +190,7 @@ namespace PdfCraft.API
                             var xObject = imageDefinition.XObject;
 
                             var imageReference = string.Format("{0} {1} 0 R ", xObject.XObjectname, xObject.Number);
-                            _xObjectReferences.Add(imageReference);
+                            xObjectReferences.Add(imageReference);
 
                             const string imageFormat = "q {0} 0 0 {1} {2} {3} cm {4} Do Q ";
                             var yPosition = Size.Height - imageDefinition.TopLeft.Y - imageDefinition.Size.Height;

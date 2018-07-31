@@ -2,28 +2,28 @@
 {
     internal class FontDefinition
     {
-        private readonly FontObject _font;
-        private readonly int _size;
-
         public FontDefinition(FontObject font, int size)
         {
-            _font = font;
-            _size = size;
+            Font = font;
+            Size = size;
         }
 
-        public FontObject Font
-        {
-            get { return _font; }
-        }
-
-        public int Size
-        {
-            get { return _size; }
-        }
+        public FontObject Font { get; }
+        public int Size { get; }
 
         public int GetWidth(char c)
         {
-            return _font.FontWidths.Widths[(byte)c] * _size;
+            return Font.GetWidth(c, Size);
+        }
+
+        public string Map(string text)
+        {
+            return Font.Map(text);
+        }
+
+        public byte[] Encode(string text)
+        {
+            return Font.Encode(text);
         }
     }
 }

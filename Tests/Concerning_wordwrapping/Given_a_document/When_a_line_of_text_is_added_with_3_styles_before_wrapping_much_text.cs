@@ -43,7 +43,7 @@ namespace Tests.Concerning_wordwrapping.Given_a_document
         {
             var textbox = _sut.CreateTextBox(new Rectangle(location, size));
             textbox.SetAlignment(textAlignment);
-            textbox.SetFont(new FontProperties { Name = "Courier", Size = fontSize });
+            textbox.SetFont(new FontProperties ("Courier", fontSize ));
 
             textbox.SetColor(Color.Black);
             textbox.AddText("function should ");

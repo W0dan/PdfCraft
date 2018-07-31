@@ -18,14 +18,14 @@ namespace Tests.Concerning_the_API.Given_a_document
             _sut = new Document();
             _title = _sut.CreateTextBox(new Rectangle(new Point(20, 20), new Size(170, 10)));
             _title.SetColor(Color.Black);
-            _title.SetFont(new FontProperties { Name = "Courier", Size = 20 });
+            _title.SetFont(new FontProperties("Courier", 20));
             _title.AddText("The select Model");
 
             var location = new Point(20, 45);
             var size = new Size(170, 235);
             _textbox = _sut.CreateTextBox(new Rectangle(location, size));
             _textbox.SetAlignment(TextAlignment.Right);
-            _textbox.SetFont(new FontProperties { Name = "Courier", Size = 10 });
+            _textbox.SetFont(new FontProperties("Courier", 10));
             var realisticText = "The select Model is the most widely available I/O model in Winsock. " +
                                 "We call it the select model because it centers on using the select function to " +
                                 "manage I/O. The design of this model originated on Unix-based computers featuring " +

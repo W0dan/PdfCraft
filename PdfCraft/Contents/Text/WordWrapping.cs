@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using PdfCraft.Fonts;
+using PdfCraft.Fonts.TrueType;
 
 namespace PdfCraft.Contents.Text
 {
     internal class WordWrapping
     {
-        private int _runningLineLength;
+        private int runningLineLength;
 
         public WordWrapping(int width)
         {
@@ -37,7 +38,7 @@ namespace PdfCraft.Contents.Text
                     lengthSinceLastBreak = 0;
                     lastBreakPosition = i;
                 }
-                else if (c == '\\')
+                else if (c == '\\' && currentFont.Font.GetType() != typeof(TrueTypeFontObject))
                 {
                     //next value(s) are escaped
                     c = text[++i];
@@ -55,11 +56,11 @@ namespace PdfCraft.Contents.Text
 
                 var glyphWidth = currentFont.GetWidth(c);
 
-                _runningLineLength += glyphWidth;
+                runningLineLength += glyphWidth;
                 runningPartLength += glyphWidth;
                 lengthSinceLastBreak += glyphWidth;
 
-                if (_runningLineLength > LineLength)
+                if (runningLineLength > LineLength)
                 {
                     var textPart = text.Substring(previousBreakPoint, lastBreakPosition + 1 - previousBreakPoint);
 
@@ -77,7 +78,7 @@ namespace PdfCraft.Contents.Text
                     }
 
                     previousBreakPoint = lastBreakPosition + 1;
-                    _runningLineLength = lengthSinceLastBreak;
+                    runningLineLength = lengthSinceLastBreak;
                 }
             }
 
@@ -106,6 +107,6 @@ namespace PdfCraft.Contents.Text
             return result;
         }
 
-        public int LineLength { get; set; }
+        private int LineLength { get; }
     }
 }

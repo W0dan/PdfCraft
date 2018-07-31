@@ -16,7 +16,7 @@ namespace Tests.Concerning_the_API.Given_a_TextBox
         {
             var document = new Document();
             _sut = document.CreateTextBox(new Rectangle(new Point(50, 50), new Size(50, 50)));
-            _sut.SetFont(new FontProperties { Name = "Helvetica", Size = 10 });
+            _sut.SetFont(new FontProperties ("Helvetica", 10 ));
             _addedText = "Price: € 50,25-";
             _expectedText = @"Price: \200 50,25-";
         }

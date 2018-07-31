@@ -10,7 +10,6 @@ namespace PdfCraft
     {
         private int _parentObjectNumber;
         private Size _size;
-        private ContentsObject _contents;
 
         public PageObject(int objectNumber, Size size)
             : base(objectNumber)
@@ -20,7 +19,7 @@ namespace PdfCraft
 
         public void AddContents(ContentsObject contents)
         {
-            _contents = contents;
+            Contents = contents;
         }
 
         public void AddTextBox(TextBox textbox)
@@ -28,20 +27,17 @@ namespace PdfCraft
             var newY = _size.Height - textbox.Position.Y;
             textbox.Position = new Point(textbox.Position.X, newY);
 
-            _contents.AddTextBox(textbox);
+            Contents.AddTextBox(textbox);
         }
 
         public void AddCanvas(GraphicsCanvas canvas)
         {
             canvas.Size = _size;
 
-            _contents.AddCanvas(canvas);
+            Contents.AddCanvas(canvas);
         }
 
-        public ContentsObject Contents
-        {
-            get { return _contents; }
-        }
+        public ContentsObject Contents { get; private set; }
 
         public void SetParentObjectNumber(int objectNumber)
         {
@@ -53,23 +49,24 @@ namespace PdfCraft
             get
             {
                 var content = ByteContainerFactory
-                    .CreateByteContainer(string.Format("<< /Type /Page\r\n/Parent {0} 0 R", _parentObjectNumber) + StringConstants.NewLine);
+                    .CreateByteContainer(
+                        $"<< /Type /Page\r\n/Parent {_parentObjectNumber} 0 R{StringConstants.NewLine}");
 
-                content.Append(string.Format("/MediaBox [0 0 {0} {1}]", _size.Width, _size.Height) + StringConstants.NewLine);
-                content.Append(string.Format("/Contents {0} 0 R", _contents.Number) + StringConstants.NewLine);
+                content.Append($"/MediaBox [0 0 {_size.Width} {_size.Height}]{StringConstants.NewLine}");
+                content.Append($"/Contents {Contents.Number} 0 R{StringConstants.NewLine}");
 
-                content.Append("/Resources <<" + StringConstants.NewLine);
-                content.Append("/ProcSet [/PDF /Text /ImageC]" + StringConstants.NewLine);
+                content.Append($"/Resources <<{StringConstants.NewLine}");
+                content.Append($"/ProcSet [/PDF /Text /ImageC]{StringConstants.NewLine}");
 
                 //fonts
                 content.Append("/Font << ");
-                foreach (var fontname in _contents.GetFontnames())
+                foreach (var fontname in Contents.GetFontnames())
                     content.Append(fontname);
                 content.Append(">>" + StringConstants.NewLine);
 
                 //xobjects
                 content.Append("/XObject << ");
-                foreach (var xObjectname in _contents.GetXObjectnames())
+                foreach (var xObjectname in Contents.GetXObjectnames())
                     content.Append(xObjectname);
                 content.Append(">>" + StringConstants.NewLine);
 

@@ -50,14 +50,71 @@
     <Compile Include="Contents\Text\TextboxLineBuffer.cs" />
     <Compile Include="Contents\Text\TextboxLinePart.cs" />
     <Compile Include="Contents\Text\TextStyle.cs" />
+    <Compile Include="Extensions\ByteArrayExtension.cs" />
     <Compile Include="Extensions\IntExtensions.cs" />
     <Compile Include="Fonts\FontDefinition.cs" />
-    <Compile Include="Fonts\FontDescriptor.cs" />
+    <Compile Include="Fonts\IFontWidths.cs" />
+    <Compile Include="Fonts\Standard14\Standard14FontDescriptor.cs" />
     <Compile Include="Fonts\FontObject.cs" />
-    <Compile Include="Fonts\Fontwidths.cs" />
+    <Compile Include="Fonts\FontType.cs" />
+    <Compile Include="Fonts\Standard14\Standard14Fontwidths.cs" />
     <Compile Include="Contents\Graphics\CircleDefinition.cs" />
     <Compile Include="Contents\Graphics\ImageType.cs" />
     <Compile Include="Contents\Graphics\XObject.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Cvt\Cvt.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Cvt\CvtReader.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Glyf\GlyfReader.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Loca\LocaFormat.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Prep\Prep.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Prep\PrepReader.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Fpgm\Fpgm.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Fpgm\FpgmReader.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Loca\Loca.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Loca\LocaReader.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Maxp\Maxp.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Maxp\MaxpReader.cs" />
+    <Compile Include="Fonts\TrueType\PdfCharacterMetric.cs" />
+    <Compile Include="Fonts\TrueType\PdfFontDefinition.cs" />
+    <Compile Include="Fonts\TrueType\TtfFontSubset.cs" />
+    <Compile Include="Fonts\TrueType\TrueTypeDescendantFont.cs" />
+    <Compile Include="Fonts\TrueType\TrueTypeFontDescriptor.cs" />
+    <Compile Include="Fonts\TrueType\TrueTypeFontFile2.cs" />
+    <Compile Include="Fonts\TrueType\TrueTypeFontObject.cs" />
+    <Compile Include="Fonts\Standard14\Standard14FontObject.cs" />
+    <Compile Include="Fonts\TrueType\TrueTypeToUnicode.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Conversion\ConversionReader.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Conversion\Converter.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Cmap\Cmap.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Cmap\CmapEncoding.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Cmap\CmapEncodingFormat4.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Cmap\CmapEncodingFormat4Segment.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Cmap\CmapEncodingFormat6.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Cmap\CmapReader.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Cmap\CmapEncodingFormat0.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Cmap\ICmapEncodingFormat.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Fixed.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Head\Head.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Head\HeadReader.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Hhea\Hhea.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Hhea\HheaReader.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Hmtx\Hmtx.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Hmtx\HmtxReader.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Hmtx\LongHorMetric.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Name\Name.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Name\NameReader.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Name\NameRecord.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Os2\Os2.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Os2\Os2Reader.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\PascalString.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Post\Post.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Post\PostFormat2.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\Post\PostReader.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\TtfData.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\TtfHeader.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\TtfParser.cs" />
+    <Compile Include="Fonts\TrueType\Parsing\Tables\TtfTableDirectoryEntry.cs" />
+    <Compile Include="Fonts\TrueType\UsedCharacter.cs" />
+    <Compile Include="Fonts\TrueType\UsedCharacterList.cs" />
     <Compile Include="PdfGenerator.cs" />
     <Compile Include="Contents\ContentsPart.cs" />
     <Compile Include="API\GraphicsCanvas.cs" />
@@ -69,7 +126,6 @@
     <Compile Include="Extensions\SizeExtensions.cs" />
     <Compile Include="Fonts\FontProperties.cs" />
     <Compile Include="Fonts\FontFactory.cs" />
-    <Compile Include="Fonts\Fonts.cs" />
     <Compile Include="Contents\Graphics\BoxDefinition.cs" />
     <Compile Include="Contents\Graphics\Command.cs" />
     <Compile Include="Contents\Graphics\GraphicsCommand.cs" />
@@ -90,9 +146,7 @@
     <Compile Include="Contents\Text\TextCommand.cs" />
     <Compile Include="Contents\Text\WordWrapping.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Fonts\TrueType\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Fonts\fontwidths.resx">
       <SubType>Designer</SubType>

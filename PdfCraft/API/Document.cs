@@ -8,20 +8,20 @@ namespace PdfCraft.API
 {
     public class Document
     {
-        private int _nextObjectNumber = 1;
-        private readonly Fonts.Fonts _fonts;
-        private readonly CatalogObject _catalog;
-        private readonly PagesObject _pages;
-        private readonly List<PageObject> _pageObjects = new List<PageObject>();
-        private readonly XObjects _xObjects;
+        private int nextObjectNumber = 1;
+        internal readonly FontFactory FontFactory;
+        private readonly CatalogObject catalog;
+        private readonly PagesObject pages;
+        private readonly List<PageObject> pageObjects = new List<PageObject>();
+        private readonly XObjects xObjects;
 
         public Document()
         {
-            _catalog = new CatalogObject(GetNextObjectNumber());
-            _pages = new PagesObject(GetNextObjectNumber());
-            _catalog.AddPages(_pages);
-            _fonts = new Fonts.Fonts();
-            _xObjects = new XObjects();
+            catalog = new CatalogObject(GetNextObjectNumber());
+            pages = new PagesObject(GetNextObjectNumber());
+            catalog.AddPages(pages);
+            FontFactory = new FontFactory();
+            xObjects = new XObjects();
         }
 
         public TextBox CreateTextBox(Rectangle sizeAndPosition)
@@ -34,29 +34,24 @@ namespace PdfCraft.API
             return new GraphicsCanvas(this);
         }
 
-        internal int GetNextObjectNumber()
+        private int GetNextObjectNumber()
         {
-            return _nextObjectNumber++;
+            return nextObjectNumber++;
         }
 
-        internal FontObject AddFont(string name)
+        internal FontObject AddFont(string name, HashSet<FontStyle> fontStyles, FontProperties properties)
         {
-            return _fonts.AddFont(name, GetNextObjectNumber);
-        }
-
-        internal Fonts.Fonts Fonts
-        {
-            get { return _fonts; }
+            return FontFactory.AddFont(name, GetNextObjectNumber, fontStyles, properties);
         }
 
         internal XObject AddXObject(ImageType imageType, string sourceFile)
         {
-            return _xObjects.AddXObject(imageType, sourceFile, GetNextObjectNumber);
+            return xObjects.AddXObject(imageType, sourceFile, GetNextObjectNumber);
         }
 
         internal XObject AddXObject(ImageType imageType, Stream sourceStream)
         {
-            return _xObjects.AddXObject(imageType, sourceStream, GetNextObjectNumber);
+            return xObjects.AddXObject(imageType, sourceStream, GetNextObjectNumber);
         }
 
         public Page AddPage(int width = 210, int height = 297)
@@ -65,8 +60,8 @@ namespace PdfCraft.API
             var page = new PageObject(GetNextObjectNumber(), new Size(width, height));
 
             page.AddContents(contents);
-            _pages.AddPage(page);
-            _pageObjects.Add(page);
+            pages.AddPage(page);
+            pageObjects.Add(page);
 
             return new Page(page);
         }
@@ -75,25 +70,23 @@ namespace PdfCraft.API
         {
             var generator = new PdfGenerator();
 
-            generator.AddCatalog(_catalog);
-            generator.AddObject(_pages);
+            generator.AddCatalog(catalog);
+            generator.AddObject(pages);
 
-            foreach (var fontObject in _fonts.ToDictionary())
-            {
-                generator.AddObject(fontObject.Value);
-                generator.AddObject(fontObject.Value.FontDescriptor);
-                generator.AddObject(fontObject.Value.FontWidths);
-            }
-
-            foreach (var xObject in _xObjects.ToDictionary())
+            foreach (var xObject in xObjects.ToDictionary())
             {
                 generator.AddObject(xObject.Value);
             }
 
-            foreach (var pageObject in _pageObjects)
+            foreach (var pageObject in pageObjects)
             {
                 generator.AddObject(pageObject.Contents);
                 generator.AddObject(pageObject);
+            }
+
+            foreach (var fontObject in FontFactory.ToDictionary())
+            {
+                generator.AddObject(fontObject.Value);
             }
 
             return generator.GetBytes();

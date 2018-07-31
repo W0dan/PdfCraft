@@ -14,280 +14,139 @@ namespace PdfCraft.API
 {
     public class TextBox : ContentsPart
     {
-        private readonly Document _owner;
-        private readonly List<TextCommand> _textCommands = new List<TextCommand>();
-        private readonly HashSet<string> _fontReferences = new HashSet<string>();
-        private readonly Size _size;
+        private readonly Document owner;
+        private readonly List<TextCommand> textCommands = new List<TextCommand>();
+        private readonly HashSet<string> fontReferences = new HashSet<string>();
 
-        private readonly HashSet<FontStyle> _fontStyles = new HashSet<FontStyle>();
-        private FontProperties _currentFont;
+        private readonly HashSet<FontStyle> fontStyles = new HashSet<FontStyle>();
+        private FontProperties currentFont;
 
         internal TextBox(Rectangle sizeAndPosition, Document owner)
         {
-            _size = new Size(sizeAndPosition.Width.ToMillimeters(), sizeAndPosition.Height.ToMillimeters());
+            size = new Size(sizeAndPosition.Width.ToMillimeters(), sizeAndPosition.Height.ToMillimeters());
             Position = new Point(sizeAndPosition.X.ToMillimeters(), sizeAndPosition.Y.ToMillimeters());
 
-            _owner = owner;
+            this.owner = owner;
         }
 
-        internal override bool IsText { get { return true; } }
+        internal override bool IsText => true;
 
         public Point Position { get; set; }
+        private readonly Size size;
 
-        public void SetFont(FontProperties properties, bool onlyStyleChanged = false)
+        public void Calculate()
         {
-            var fontName = properties.Name;
-            if (properties.Name == "Helvetica" || properties.Name == "Courier")
-            {
-                if (_fontStyles.Count > 0)
-                    fontName += "-";
-                if (_fontStyles.Contains(FontStyle.Bold))
-                    fontName += "Bold";
-                if (_fontStyles.Contains(FontStyle.Italic))
-                    fontName += "Oblique";
-            }
+            var dummy = Content;
+        }
 
+        /// <summary>
+        /// call Calculate() in order to populate this property !!
+        /// </summary>
+        public int CalculatedHeight { get; private set; }
+
+        public void SetFont(FontProperties properties)
+        {
+            SetFont(properties, false);
+        }
+
+        private void SetFont(FontProperties properties, bool onlyStyleChanged)
+        {
             if (!onlyStyleChanged)
-                _currentFont = properties;
+                currentFont = properties;
 
-            var font = _owner.AddFont(fontName);
-            _textCommands.Add(new TextCommand(Command.SetFont, new FontDefinition(font, properties.Size)));
+            var font = owner.AddFont(properties.Name, fontStyles, properties);
+            textCommands.Add(new TextCommand(Command.SetFont, new FontDefinition(font, properties.Size)));
 
-            var fontReference = string.Format("{0} {1} 0 R ", font.FontName, font.Number);
-            if (!_fontReferences.Contains(fontReference))
-                _fontReferences.Add(fontReference);
+            var fontReference = $"{font.FontName} {font.Number} 0 R ";
+            if (!fontReferences.Contains(fontReference))
+                fontReferences.Add(fontReference);
         }
 
         public void SetBoldOn()
         {
-            if (!_fontStyles.Contains(FontStyle.Bold))
-                _fontStyles.Add(FontStyle.Bold);
-            SetFont(_currentFont, true);
+            if (!fontStyles.Contains(FontStyle.Bold))
+                fontStyles.Add(FontStyle.Bold);
+            SetFont(currentFont, true);
         }
 
         public void SetBoldOff()
         {
-            if (_fontStyles.Contains(FontStyle.Bold))
-                _fontStyles.Remove(FontStyle.Bold);
-            SetFont(_currentFont, true);
+            if (fontStyles.Contains(FontStyle.Bold))
+                fontStyles.Remove(FontStyle.Bold);
+            SetFont(currentFont, true);
         }
 
         public void SetItalicOn()
         {
-            if (!_fontStyles.Contains(FontStyle.Italic))
-                _fontStyles.Add(FontStyle.Italic);
-            SetFont(_currentFont, true);
+            if (!fontStyles.Contains(FontStyle.Italic))
+                fontStyles.Add(FontStyle.Italic);
+            SetFont(currentFont, true);
         }
 
         public void SetItalicOff()
         {
-            if (_fontStyles.Contains(FontStyle.Italic))
-                _fontStyles.Remove(FontStyle.Italic);
-            SetFont(_currentFont, true);
+            if (fontStyles.Contains(FontStyle.Italic))
+                fontStyles.Remove(FontStyle.Italic);
+            SetFont(currentFont, true);
         }
 
         public void SetSuperscriptOn()
         {
-            _textCommands.Add(new TextCommand(Command.SetSuperscriptOn, null));
+            textCommands.Add(new TextCommand(Command.SetSuperscriptOn, null));
         }
 
         public void SetSuperscriptOff()
         {
-            _textCommands.Add(new TextCommand(Command.SetSuperscriptOff, null));
+            textCommands.Add(new TextCommand(Command.SetSuperscriptOff, null));
         }
 
         public void SetAlignment(TextAlignment alignment)
         {
-            _textCommands.Add(new TextCommand(Command.SetAlignment, alignment));
+            textCommands.Add(new TextCommand(Command.SetAlignment, alignment));
         }
 
-        public IEnumerable<string> GetFontnames()
+        public IEnumerable<string> GetFontReferences()
         {
-            return _fontReferences;
+            return fontReferences;
         }
 
         public void SetColor(Color color)
         {
-            _textCommands.Add(new TextCommand(Command.SetColor, color));
+            textCommands.Add(new TextCommand(Command.SetColor, color));
         }
 
         public void AddText(string text)
         {
-            text = text.Replace(@"\", @"\\");
-            text = text.Replace(@"(", @"\(");
-            text = text.Replace(@")", @"\)");
+            if (text == null)
+            {
+                textCommands.Add(new TextCommand(Command.AddText, ""));
+                return;
+            }
 
-            text = text.Replace("€", @"\200"); //128
-
-            text = text.Replace("‚", @"\202"); //130
-            text = text.Replace("ƒ", @"\203");
-            text = text.Replace("„", @"\204");
-            text = text.Replace("…", @"\205");
-            text = text.Replace("†", @"\206");
-            text = text.Replace("‡", @"\207");
-
-            text = text.Replace("ˆ", @"\210"); //136
-            text = text.Replace("‰", @"\211");
-            text = text.Replace("Š", @"\212");
-            text = text.Replace("‹", @"\213");
-            text = text.Replace("Œ", @"\214");
-            text = text.Replace("Ž", @"\216");
-
-            text = text.Replace("‘", @"\221"); //145
-            text = text.Replace("’", @"\222");
-            text = text.Replace("“", @"\223");
-            text = text.Replace("”", @"\224");
-            text = text.Replace("•", @"\225");
-            text = text.Replace("–", @"\226");
-            text = text.Replace("—", @"\227");
-
-            text = text.Replace("˜", @"\230"); //152
-            text = text.Replace("™", @"\231");
-            text = text.Replace("š", @"\232");
-            text = text.Replace("›", @"\233");
-            text = text.Replace("œ", @"\234");
-            text = text.Replace("ž", @"\236");
-            text = text.Replace("Ÿ", @"\237");
-
-            text = text.Replace(" ", @"\240"); //160
-            text = text.Replace("¡", @"\241");
-            text = text.Replace("¢", @"\242");
-            text = text.Replace("£", @"\243");
-            text = text.Replace("¤", @"\244");
-            text = text.Replace("¥", @"\245");
-            text = text.Replace("¦", @"\246");
-            text = text.Replace("§", @"\247");
-
-            text = text.Replace("¨", @"\250"); //168
-            text = text.Replace("©", @"\251");
-            text = text.Replace("ª", @"\252");
-            text = text.Replace("«", @"\253");
-            text = text.Replace("¬", @"\254");
-            text = text.Replace("®", @"\256");
-            text = text.Replace("¯", @"\257");
-
-            text = text.Replace("°", @"\260"); //176
-            text = text.Replace("±", @"\261");
-            text = text.Replace("²", @"\262");
-            text = text.Replace("³", @"\263");
-            text = text.Replace("´", @"\264");
-            text = text.Replace("µ", @"\265");
-            text = text.Replace("¶", @"\266");
-            text = text.Replace("·", @"\267");
-
-            text = text.Replace("¸", @"\270"); //184
-            text = text.Replace("¹", @"\271");
-            text = text.Replace("º", @"\272");
-            text = text.Replace("»", @"\273");
-            text = text.Replace("¼", @"\274");
-            text = text.Replace("½", @"\275");
-            text = text.Replace("¾", @"\276");
-            text = text.Replace("¿", @"\277");
-
-            text = text.Replace("À", @"\300"); //192
-            text = text.Replace("Á", @"\301");
-            text = text.Replace("Â", @"\302");
-            text = text.Replace("Ã", @"\303");
-            text = text.Replace("Ä", @"\304");
-            text = text.Replace("Å", @"\305");
-            text = text.Replace("Æ", @"\306");
-            text = text.Replace("Ç", @"\307");
-
-            text = text.Replace("È", @"\310"); //200
-            text = text.Replace("É", @"\311");
-            text = text.Replace("Ê", @"\312");
-            text = text.Replace("Ë", @"\313");
-            text = text.Replace("Ì", @"\314");
-            text = text.Replace("Í", @"\315");
-            text = text.Replace("Î", @"\316");
-            text = text.Replace("Ï", @"\317");
-
-            text = text.Replace("Ð", @"\320"); //208
-            text = text.Replace("Ñ", @"\321");
-            text = text.Replace("Ò", @"\322");
-            text = text.Replace("Ó", @"\323");
-            text = text.Replace("Ô", @"\324");
-            text = text.Replace("Õ", @"\325");
-            text = text.Replace("Ö", @"\326");
-            text = text.Replace("×", @"\327");
-
-            text = text.Replace("Ø", @"\330"); //216
-            text = text.Replace("Ù", @"\331");
-            text = text.Replace("Ú", @"\332");
-            text = text.Replace("Û", @"\333");
-            text = text.Replace("Ü", @"\334");
-            text = text.Replace("Ý", @"\335");
-            text = text.Replace("Þ", @"\336");
-            text = text.Replace("ß", @"\337");
-
-            text = text.Replace("à", @"\340"); //224
-            text = text.Replace("á", @"\341");
-            text = text.Replace("â", @"\342");
-            text = text.Replace("ã", @"\343");
-            text = text.Replace("ä", @"\344");
-            text = text.Replace("å", @"\345");
-            text = text.Replace("æ", @"\346");
-            text = text.Replace("ç", @"\347");
-
-            text = text.Replace("è", @"\350"); //232
-            text = text.Replace("é", @"\351");
-            text = text.Replace("ê", @"\352");
-            text = text.Replace("ë", @"\353");
-            text = text.Replace("ì", @"\354");
-            text = text.Replace("í", @"\355");
-            text = text.Replace("î", @"\356");
-            text = text.Replace("ï", @"\357");
-
-            text = text.Replace("ð", @"\360"); //240
-            text = text.Replace("ñ", @"\361");
-            text = text.Replace("ò", @"\362");
-            text = text.Replace("ó", @"\363");
-            text = text.Replace("ô", @"\364");
-            text = text.Replace("õ", @"\365");
-            text = text.Replace("ö", @"\366");
-            text = text.Replace("÷", @"\367");
-
-            text = text.Replace("ø", @"\370"); //248
-            text = text.Replace("ù", @"\371");
-            text = text.Replace("ú", @"\372");
-            text = text.Replace("û", @"\373");
-            text = text.Replace("ü", @"\374");
-            text = text.Replace("ý", @"\375");
-            text = text.Replace("þ", @"\376");
-            text = text.Replace("ÿ", @"\377");
-
-            _textCommands.Add(new TextCommand(Command.AddText, text));
+            textCommands.Add(new TextCommand(Command.AddText, text));
         }
 
-        internal Document Owner
-        {
-            get { return _owner; }
-        }
+        internal Document Owner => owner;
 
         internal override IByteContainer Content
         {
             get
             {
-                //FontDefinition currentFont = null;
-                //var currentAlignment = TextAlignment.Left;
-                //var currentColor = Color.Black;
-                //var superscript = false;
-
                 var currentStyle = new TextStyle
-                    {
-                        Alignment = TextAlignment.Left,
-                        Color = Color.Black,
-                        Superscript = false,
-                        Font = null
-                    };
+                {
+                    Alignment = TextAlignment.Left,
+                    Color = Color.Black,
+                    Superscript = false,
+                    Font = null
+                };
 
                 var buffer = new List<TextboxLineBuffer>();
 
                 TextboxLineBuffer lineBuffer = null;
 
-                var wordWrapper = new WordWrapping(_size.Width);
+                var wordWrapper = new WordWrapping(size.Width);
 
-                foreach (var textCommand in _textCommands)
+                foreach (var textCommand in textCommands)
                 {
                     switch (textCommand.Command)
                     {
@@ -322,7 +181,7 @@ namespace PdfCraft.API
                             }
 
                             lineBuffer.CurrentAlignment = currentStyle.Alignment;
-                            var addedText = textCommand.Data.ToString();
+                            var addedText = currentStyle.Font.Map(textCommand.Data.ToString());
                             var texts = addedText.Split('\n');
 
                             for (var i = 0; i < texts.Length; i++)
@@ -331,7 +190,7 @@ namespace PdfCraft.API
                                 {
                                     lineBuffer.Parts.Last().EndOfLine = true;
                                     lineBuffer.Linefeed = true;
-                                    wordWrapper = new WordWrapping(_size.Width);
+                                    wordWrapper = new WordWrapping(size.Width);
                                 }
 
                                 var breaks = wordWrapper.WrapIt(texts[i], currentStyle.Font);
@@ -367,29 +226,39 @@ namespace PdfCraft.API
         private IByteContainer WriteBufferToPdf(IEnumerable<TextboxLineBuffer> buffer)
         {
             var sbBuffered = ByteContainerFactory.CreateByteContainer();
-            sbBuffered.Append(string.Format("1 0 0 1 {0} {1} Tm ", Position.X, Position.Y));
+            sbBuffered.Append($"1 0 0 1 {Position.X} {Position.Y} Tm ");
 
-            var textLeadingIsSet = false;
             var colorIsSet = false;
             var superscriptIsSet = false;
-            FontDefinition previousFont = null;
+            FontDefinition currentFont = null;
             var previousColor = Color.Black;
 
             double previousLineLength = -1;
 
             var yPosition = Position.Y;
             var textLeading = 0;
+            CalculatedHeight = 0;
+
 
             foreach (var line in buffer)
             {
-                var sbBufferedLine = new StringBuilder();
+                var firstPartOnLine = true;
+                var textLeadingForCurrentLine = "T* ";
+
+                //var sbBufferedLine = new StringBuilder();
+                var sbBufferedLine = ByteContainerFactory.CreateByteContainer();
                 foreach (var part in line.Parts)
                 {
-                    if (!textLeadingIsSet)
+                    if (firstPartOnLine)
                     {
-                        textLeadingIsSet = true;
-                        textLeading = (int)(part.Style.Font.Size * 1.21);
-                        sbBuffered.Append(string.Format("0 -{0} TD ", textLeading));
+                        firstPartOnLine = false;
+
+                        var tempTextLeading = (int)(part.Style.Font.Size * 1.21);
+                        if (textLeading != tempTextLeading)
+                        {
+                            textLeading = tempTextLeading;
+                            textLeadingForCurrentLine = $"{textLeading} TL T* ";
+                        }
                     }
 
                     if (!colorIsSet || part.Style.Color != previousColor)
@@ -399,43 +268,55 @@ namespace PdfCraft.API
                         sbBufferedLine.Append(string.Format(part.Style.Color.ToPdfColor() + " rg "));
                     }
 
-                    if (part.Style.Font != previousFont)
+                    if (part.Style.Font != currentFont)
                     {
-                        previousFont = part.Style.Font;
-                        sbBufferedLine.Append(string.Format("{0} {1} Tf ", part.Style.Font.Font.FontName, part.Style.Font.Size));
+                        currentFont = part.Style.Font;
+                        sbBufferedLine.Append($"{part.Style.Font.Font.FontName} {part.Style.Font.Size} Tf ");
 
-                        textLeading = (int)(part.Style.Font.Size * 1.21);
-                        sbBuffered.Append(string.Format("{0} TL ", textLeading));
+                        var tempTextLeading = (int)(part.Style.Font.Size * 1.21);
+                        if (tempTextLeading > textLeading)
+                        {
+                            textLeading = tempTextLeading;
+                            textLeadingForCurrentLine = $"{textLeading} TL T* ";
+                        }
                     }
 
                     if (!superscriptIsSet && part.Style.Superscript)
                     {
                         superscriptIsSet = true;
-                        sbBufferedLine.Append(string.Format("{0} {1} Tf ", part.Style.Font.Font.FontName, part.Style.Font.Size / 2));
-                        sbBufferedLine.Append(string.Format("{0} Ts ", part.Style.Font.Size / 2));
+                        sbBufferedLine.Append($"{part.Style.Font.Font.FontName} {part.Style.Font.Size / 2} Tf ");
+                        sbBufferedLine.Append($"{part.Style.Font.Size / 2} Ts ");
                     }
 
                     if (superscriptIsSet && !part.Style.Superscript)
                     {
                         superscriptIsSet = false;
-                        sbBufferedLine.Append(string.Format("{0} {1} Tf ", part.Style.Font.Font.FontName, part.Style.Font.Size));
+                        sbBufferedLine.Append($"{part.Style.Font.Font.FontName} {part.Style.Font.Size} Tf ");
                         sbBufferedLine.Append("0 Ts ");
                     }
 
                     if (part.TextItem.Text.Length > 0)
-                        sbBufferedLine.Append(string.Format("({0}) Tj", part.TextItem.Text));
+                    {
+                        sbBufferedLine.Append("(");
+                        sbBufferedLine.Append(currentFont.Encode(part.TextItem.Text));
+                        sbBufferedLine.Append(") Tj");
+                    }
 
                     if (part.EndOfLine)
                     {
-                        superscriptIsSet = false;
-                        sbBufferedLine.Append(string.Format("{0} {1} Tf ", part.Style.Font.Font.FontName, part.Style.Font.Size));
-                        sbBufferedLine.Append("0 Ts ");
-                        sbBufferedLine.Append(" T*" + StringConstants.NewLine);
+                        if (superscriptIsSet)  // ????
+                        {
+                            superscriptIsSet = false;
+                            //sbBufferedLine.Append($"{part.Style.Font.Font.FontName} {part.Style.Font.Size} Tf ");
+                            sbBufferedLine.Append("0 Ts ");
+                        }
                     }
-                    else
-                        sbBufferedLine.Append(StringConstants.NewLine);
+                    sbBufferedLine.Append(StringConstants.NewLine);
                 }
                 yPosition -= textLeading;
+                CalculatedHeight += textLeading;
+
+                sbBuffered.Append(textLeadingForCurrentLine);
 
                 var currentLineLength = (double)line.Parts.Sum(x => x.TextItem.LengthInPoints) / 1000;
                 switch (line.CurrentAlignment)
@@ -457,6 +338,8 @@ namespace PdfCraft.API
                 sbBuffered.Append(sbBufferedLine);
             }
 
+            CalculatedHeight = (int)(CalculatedHeight / 2.54 + textLeading / 2.54 / 1.6);
+
             return sbBuffered;
         }
 
@@ -464,7 +347,7 @@ namespace PdfCraft.API
         {
             if (previousLineLength >= 0)
             {
-                sbBuffered.Append(string.Format("1 0 0 1 {0} {1} Tm ", horizontalMargin, yPosition));
+                sbBuffered.Append($"1 0 0 1 {horizontalMargin} {yPosition} Tm ");
                 previousLineLength = -1;
             }
 
@@ -474,9 +357,9 @@ namespace PdfCraft.API
                 if (isLastLineOfParagraph)
                     scaleFactor = 100;
                 else
-                    scaleFactor = _size.Width / currentLineLength * 100;
+                    scaleFactor = size.Width / currentLineLength * 100;
 
-                sbBuffered.Append(string.Format("{0:0.###} Tz ", scaleFactor).Replace(',', '.'));
+                sbBuffered.Append($"{scaleFactor:0.###} Tz ".Replace(',', '.'));
             }
 
             return sbBuffered;
@@ -496,11 +379,11 @@ namespace PdfCraft.API
         {
             double xOffset;
             if (previousLineLength < 0)
-                xOffset = (_size.Width - currentLineLength) / 2;
+                xOffset = (size.Width - currentLineLength) / 2;
             else
                 xOffset = (previousLineLength - currentLineLength) / 2;
 
-            sbBuffered.Append(string.Format("{0:0.###} 0 Td ", xOffset).Replace(',', '.'));
+            sbBuffered.Append($"{xOffset:0.###} 0 Td ".Replace(',', '.'));
 
             previousLineLength = currentLineLength;
 
@@ -521,11 +404,11 @@ namespace PdfCraft.API
         {
             double xOffset;
             if (previousLineLength < 0)
-                xOffset = _size.Width - (currentLineLength);
+                xOffset = size.Width - currentLineLength;
             else
-                xOffset = (previousLineLength - currentLineLength);
+                xOffset = previousLineLength - currentLineLength;
 
-            sbBuffered.Append(string.Format("{0:0.###} 0 Td ", xOffset).Replace(',', '.'));
+            sbBuffered.Append($"{xOffset:0.###} 0 Td ".Replace(',', '.'));
 
             previousLineLength = currentLineLength;
             return sbBuffered;
@@ -535,7 +418,7 @@ namespace PdfCraft.API
         {
             if (previousLineLength >= 0)
             {
-                sbBuffered.Append(string.Format("1 0 0 1 {0} {1} Tm ", horizontalMargin, yPosition));
+                sbBuffered.Append($"1 0 0 1 {horizontalMargin} {yPosition} Tm ");
                 previousLineLength = -1;
             }
 

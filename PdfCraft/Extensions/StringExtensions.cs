@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 
 namespace PdfCraft.Extensions
 {
@@ -10,7 +11,17 @@ namespace PdfCraft.Extensions
             if (text.Any(x => x > (char)127))
                 throw new ArgumentOutOfRangeException(text, "only ASCII values are allowed");
 
-            return System.Text.Encoding.Default.GetBytes(text);
+            return Encoding.Default.GetBytes(text);
+        }
+
+        public static string ToHex(this string text)
+        {
+            var result = new StringBuilder(text.Length * 2);
+            foreach (var c in text)
+            {
+                result.Append(Convert.ToByte(c).ToString("X2"));
+            }
+            return result.ToString();
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Tests.Concerning_the_API.Given_a_document
             _sut = new Document();
             _title = _sut.CreateTextBox(new Rectangle(new Point(20, 20), new Size(170, 10)));
             _title.SetColor(Color.Black);
-            _title.SetFont(new FontProperties { Name = "Helvetica", Size = 20 });
+            _title.SetFont(new FontProperties ("Helvetica", 20 ));
             _title.AddText("The select Model");
 
             _canvas1 = _sut.CreateCanvas();
@@ -45,7 +45,7 @@ namespace Tests.Concerning_the_API.Given_a_document
         {
             var textbox = _sut.CreateTextBox(new Rectangle(location, size));
             textbox.SetAlignment(TextAlignment.Justify);
-            textbox.SetFont(new FontProperties { Name = "Helvetica", Size = fontSize });
+            textbox.SetFont(new FontProperties ( "Helvetica", fontSize ));
             var realisticText_pt1 = "The select Model is the most widely\\available I/O model in Winsock. " +
                                     "We call it the select model because it centers on using the select function to " +
                                     "manage I/O. The design of this model originated on Unix-based computers featuring " +
@@ -67,10 +67,10 @@ namespace Tests.Concerning_the_API.Given_a_document
                                     "a socket is in a blocking mode and to prevent the ";
             textbox.AddText(realisticText_pt3);
 
-            textbox.SetFont(new FontProperties { Name = "Courier", Size = 15 });
+            textbox.SetFont(new FontProperties ("Courier", 15 ));
             textbox.AddText("WSAEWOULDBLOCK");
 
-            textbox.SetFont(new FontProperties { Name = "Helvetica", Size = fontSize });
+            textbox.SetFont(new FontProperties ( "Helvetica", fontSize ));
             var realisticText_pt4 = " error when a socket " +
                                     "is in nonblocking mode. The select function blocks for I/O opperations until the " +
                                     "conditions specified as parameters are met. The function prototype for select is " +

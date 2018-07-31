@@ -8,6 +8,7 @@
         DrawBox,
         DrawCircle,
         DrawImage,
-        DrawPoligon
+        DrawPoligon,
+        SetLineWidth
     }
 }

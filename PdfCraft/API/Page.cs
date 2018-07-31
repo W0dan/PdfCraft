@@ -2,21 +2,21 @@
 {
     public class Page
     {
-        private readonly PageObject _page;
+        private readonly PageObject page;
 
         internal Page(PageObject page)
         {
-            _page = page;
+            this.page = page;
         }
 
         public void AddTextBox(TextBox textbox)
         {
-            _page.AddTextBox(textbox);
+            page.AddTextBox(textbox);
         }
 
         public void AddCanvas(GraphicsCanvas canvas)
         {
-            _page.AddCanvas(canvas);
+            page.AddCanvas(canvas);
         }
     }
 }

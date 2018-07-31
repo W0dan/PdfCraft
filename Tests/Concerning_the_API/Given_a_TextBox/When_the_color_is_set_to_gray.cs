@@ -22,7 +22,7 @@ namespace Tests.Concerning_the_API.Given_a_TextBox
         {
             _color = Color.FromArgb(127, 127, 127);
             _sut.SetColor(_color);
-            _sut.SetFont(new FontProperties { Name = "Helvetica", Size = 10 });
+            _sut.SetFont(new FontProperties ("Helvetica", 10 ));
             _sut.AddText("test");
         }
 

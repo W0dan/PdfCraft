@@ -34,7 +34,7 @@ namespace Tests.Concerning_the_API.Given_a_document
         {
             var textbox = _sut.CreateTextBox(new Rectangle(location, size));
             textbox.SetColor(Color.Black);
-            textbox.SetFont(new FontProperties { Name = "Courier", Size = 10 });
+            textbox.SetFont(new FontProperties ("Courier", 10 ));
             textbox.AddText("dit is een testje dat iets langer is.");
             textbox.SetColor(Color.Red);
             textbox.AddText(" dit is rode tekst");

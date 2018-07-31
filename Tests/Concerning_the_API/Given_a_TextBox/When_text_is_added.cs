@@ -15,7 +15,7 @@ namespace Tests.Concerning_the_API.Given_a_TextBox
         {
             var document = new Document();
             _sut = document.CreateTextBox(new Rectangle(new Point(50, 50), new Size(50, 50)));
-            _sut.SetFont(new FontProperties { Name = "Courier", Size = 10 });
+            _sut.SetFont(new FontProperties ("Courier", 10 ));
             _addedText = "Added/text";
         }
 

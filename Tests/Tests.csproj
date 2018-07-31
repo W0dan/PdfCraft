@@ -45,6 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseTest.cs" />
+    <Compile Include="Resources\Fonts\FontResource.cs" />
+    <Compile Include="Resources\Fonts\ResourceReader.cs" />
     <Compile Include="Concerning_Fonts\Given_a_FontObject\When_it_is_created_with_valid_info_1.cs" />
     <Compile Include="Concerning_Fonts\Given_a_FontObject\When_it_is_created_with_valid_info.cs" />
     <Compile Include="Concerning_the_API\Given_a_document\When_Bold_and_Italic_are_used_with_Courier.cs" />
@@ -95,12 +97,25 @@
     <Compile Include="Concerning_the_PagesObject\Given_a_PagesObject\When_2_PageObjects_are_added.cs" />
     <Compile Include="Concerning_the_PagesObject\Given_a_PagesObject\When_a_PageObject_is_added.cs" />
     <Compile Include="Concerning_the_PagesObject\Given_a_PagesObject\When_it_is_created.cs" />
+    <Compile Include="Concerning_TrueType_Fonts\When_a_Textbox_is_created_using_a_truetype_font.cs" />
     <Compile Include="Concerning_wordwrapping\Given_a_document\When_a_line_of_text_is_added_with_3_styles_before_wrapping_much_text.cs" />
     <Compile Include="Concerning_wordwrapping\Given_a_document\When_a_line_of_text_is_added_with_3_styles_before_wrapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\Fonts\arial.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\arialbd.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\arialbi.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\ariali.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\ariblk.ttf" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="Resources\Fonts\LinLibertine_RBI_G.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\LinLibertine_RB_G.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\LinLibertine_RI_G.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\LinLibertine_RZI_G.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\LinLibertine_RZ_G.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\LinLibertine_R_G.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\FlandersArtSans-Regular.ttf" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PdfCraft\PdfCraft.csproj">

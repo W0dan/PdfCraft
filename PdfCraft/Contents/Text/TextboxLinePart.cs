@@ -5,26 +5,26 @@
     /// </summary>
     internal class TextboxLinePart
     {
-        private readonly BreakPoint _textItem;
-        private readonly TextStyle _style;
-
         public TextboxLinePart(BreakPoint textItem, TextStyle style, bool endOfLine)
         {
-            _textItem = textItem;
-            _style = style;
+            TextItem = textItem;
+            Style = style;
             EndOfLine = endOfLine;
         }
 
         public bool EndOfLine { get; set; }
 
-        public BreakPoint TextItem
-        {
-            get { return _textItem; }
-        }
+        public BreakPoint TextItem { get; }
 
-        public TextStyle Style
+        public TextStyle Style { get; }
+
+        /// <summary>
+        /// for diagnostics !
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
         {
-            get { return _style; }
+            return TextItem.Text;
         }
     }
 }

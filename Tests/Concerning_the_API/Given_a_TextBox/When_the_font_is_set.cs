@@ -19,7 +19,7 @@ namespace Tests.Concerning_the_API.Given_a_TextBox
             _sut = _document.CreateTextBox(new Rectangle(new Point(50, 50), new Size(50, 50)));
 
             _fontsize = 10;
-            _properties = new FontProperties { Name = "Arial", Size = _fontsize };
+            _properties = new FontProperties("Arial", _fontsize);
         }
 
         public override void Act()
@@ -31,7 +31,7 @@ namespace Tests.Concerning_the_API.Given_a_TextBox
         [Test]
         public void It_should_contain_the_pdf_code_to_set_the_font()
         {
-            var font = _document.Fonts.ToDictionary()[_properties.GetHashCode()];
+            var font = _document.FontFactory.ToDictionary()[_properties.GetHashCode()];
             var expectedValue = string.Format("{0} {1} Tf", font.FontName, _fontsize);
 
             Assert.IsTrue(_sut.Content.ToString().Contains(expectedValue), expectedValue + " not found in TextBox");

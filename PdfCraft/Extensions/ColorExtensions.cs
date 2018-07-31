@@ -6,7 +6,7 @@ namespace PdfCraft.Extensions
     {
         public static string ToPdfColor(this Color color)
         {
-            var pdfColor = string.Format("{0:0.###} {1:0.###} {2:0.###}", (double)color.R / 255, (double)color.G / 255, (double)color.B / 255);
+            var pdfColor = $"{(double)color.R / 255:0.###} {(double)color.G / 255:0.###} {(double)color.B / 255:0.###}";
 
             return pdfColor.Replace(',', '.');
         }

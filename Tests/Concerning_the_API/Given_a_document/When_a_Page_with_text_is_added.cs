@@ -17,7 +17,7 @@ namespace Tests.Concerning_the_API.Given_a_document
             _sut = new Document();
             _textbox = _sut.CreateTextBox(new Rectangle(new Point(50, 50), new Size(50, 50)));
             _textbox.SetColor(Color.Black);
-            _textbox.SetFont(new FontProperties { Name = "Helvetica", Size = 10 });
+            _textbox.SetFont(new FontProperties ("Helvetica", 10 ));
             _textbox.AddText("dit is een testje dat iets langer is.");
         }
 

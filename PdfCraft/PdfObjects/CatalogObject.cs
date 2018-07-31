@@ -12,7 +12,7 @@ namespace PdfCraft
         public void AddPages(PagesObject pages)
         {
             var content = ByteContainerFactory
-                .CreateByteContainer(string.Format("<< /Type /Catalog /Pages {0} 0 R >>", pages.Number));
+                .CreateByteContainer($"<< /Type /Catalog /Pages {pages.Number} 0 R >>");
 
             SetContent(content);
         }

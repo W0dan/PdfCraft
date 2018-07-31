@@ -9,31 +9,31 @@ namespace Tests.Concerning_the_PageObject.Given_a_ContentsObject
     [TestFixture]
     public class When_a_TextBox_is_added : BaseTest
     {
-        private ContentsObject _sut;
-        private TextBox _textbox;
-        private Document _document;
-        private FontProperties _fontProperties;
+        private ContentsObject sut;
+        private TextBox textbox;
+        private Document document;
+        private FontProperties fontProperties;
 
         public override void Arrange()
         {
-            _document = new Document();
-            _textbox = _document.CreateTextBox(new Rectangle(new Point(50, 50), new Size(50, 50)));
+            document = new Document();
+            textbox = document.CreateTextBox(new Rectangle(new Point(50, 50), new Size(50, 50)));
 
-            _fontProperties = new FontProperties { Name = "Arial" };
-            _textbox.SetFont(_fontProperties);
+            fontProperties = new FontProperties("Arial", 10);
+            textbox.SetFont(fontProperties);
 
-            _sut = new ContentsObject(246);
+            sut = new ContentsObject(246);
         }
 
         public override void Act()
         {
-            _sut.AddTextBox(_textbox);
+            sut.AddTextBox(textbox);
         }
 
         [Test]
         public void It_should_add_the__fonts_used__to_the_document()
         {
-            Assert.IsTrue(_document.Fonts.ToDictionary().ContainsKey(_fontProperties.GetHashCode()));
+            Assert.IsTrue(document.FontFactory.ToDictionary().ContainsKey(fontProperties.GetHashCode()));
         }
     }
 }
