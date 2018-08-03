@@ -53,7 +53,8 @@ namespace PdfCraft.Fonts.TrueType.Parsing.Tables.Post
             }
             else if (post.Format.Is("3.0"))
             {
-                throw new NotSupportedException("Font with post format 3 is not supported because Apple recommends against its use.");
+                // throw new NotSupportedException("Font with post format 3 is not supported because Apple recommends against its use.");
+                // needed for windows fonts -> no additional tables needed
             } 
             else if (post.Format.Is("4.0"))
             {

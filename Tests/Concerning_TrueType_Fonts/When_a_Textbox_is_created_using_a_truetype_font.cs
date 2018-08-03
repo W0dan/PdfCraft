@@ -40,8 +40,8 @@ namespace Tests.Concerning_TrueType_Fonts
             textBox.SetColor(Color.Black);
 
             // Arial gebruikt kennelijk een afwijkend Ttf-formaat... todo: te onderzoeken !
-            //textBox.SetFont(arialRegularfontProperties);
-            //textBox.AddText("Dit is tekst in een truetype font (Arial regular)");
+            textBox.SetFont(arialRegularfontProperties);
+            textBox.AddText("Dit is tekst in een truetype font (Arial regular)");
             //textBox.SetFont(arialBoldfontProperties);
             //textBox.AddText("Dit is tekst in een truetype font (Arial bold)");
             //textBox.SetFont(arialBoldItalicfontProperties);

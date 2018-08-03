@@ -40,6 +40,12 @@ namespace PdfCraft.Fonts.TrueType
                 for (ushort i = 0; i < 65535; i++)
                 {
                     var characterMapping = cmapEncoding.Map(i);
+                    if (characterMapping >= ttfData.Hmtx.LongHorMetrics.Count) // fix for Arial ?
+                    {
+                        // todo: https://docs.microsoft.com/en-us/typography/opentype/spec/hmtx
+                        continue;
+                    }
+
                     var advanceWidth = ttfData.Hmtx.LongHorMetrics[characterMapping].AdvanceWidth;
 
                     var metric = new PdfCharacterMetric
